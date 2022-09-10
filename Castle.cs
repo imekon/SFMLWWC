@@ -64,6 +64,12 @@ namespace SFMLWWC
             return room.Visited;
         }
 
+        public void Update(Actor player)
+        {
+            var room = GetRoom(player.X, player.Y, player.Z);
+            room.Visited = true;
+        }
+
         private Room GetEmptyRoom(int z)
         {
             while(true)

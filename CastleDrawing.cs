@@ -16,8 +16,8 @@ namespace SFMLWWC
 
         public CastleDrawing(Font font)
         {
-            cursor1 = new Text(">", font);
-            cursor2 = new Text("<", font);
+            cursor1 = new Text("[", font);
+            cursor2 = new Text("]", font);
         }
 
         private static string ConvertContents(Content contents, bool visible)
@@ -27,6 +27,9 @@ namespace SFMLWWC
 
             switch(contents)
             {
+                case Content.Empty:
+                    return ".";
+
                 case Content.StairsUp:
                     return ">";
 
