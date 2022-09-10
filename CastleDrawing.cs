@@ -5,6 +5,12 @@ namespace SFMLWWC
 {
     internal class CastleDrawing
     {
+        private const int LEFT_MARGIN = 200;
+        private const int TOP_MARGIN = 50;
+        private const int HORZ_SPACING = 40;
+        private const int VERT_SPACING = 30;
+        private const int CURSOR_OFFSET = 15;
+
         private Text cursor1;
         private Text cursor2;
 
@@ -41,16 +47,16 @@ namespace SFMLWWC
                     var contents = castle.GetDrawingContents(x, y, player.Z);
                     var visible = castle.GetVisible(x, y, player.Z);
                     var text = new Text(ConvertContents(contents, visible), font);
-                    text.Position = new Vector2f(x * 30 + 100, y * 30 + 50);
+                    text.Position = new Vector2f(x * HORZ_SPACING + LEFT_MARGIN, y * VERT_SPACING + TOP_MARGIN);
 
                     window.Draw(text);
                 }
             }
 
-            cursor1.Position = new Vector2f(player.X * 30 - 15 + 100, player.Y * 30 + 50);
+            cursor1.Position = new Vector2f(player.X * HORZ_SPACING - CURSOR_OFFSET + LEFT_MARGIN, player.Y * VERT_SPACING + TOP_MARGIN);
             window.Draw(cursor1);
 
-            cursor2.Position = new Vector2f(player.X * 30 + 15 + 100, player.Y * 30 + 50);
+            cursor2.Position = new Vector2f(player.X * HORZ_SPACING + CURSOR_OFFSET + LEFT_MARGIN, player.Y * VERT_SPACING + TOP_MARGIN);
             window.Draw(cursor2);
         }
     }

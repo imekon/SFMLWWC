@@ -23,10 +23,11 @@ namespace SFMLWWC
 
             window.Closed += (sender, args) => window.Close();
 
+            var background = new Color(80, 80, 255);
             while(window.IsOpen)
             {
                 window.DispatchEvents();
-                window.Clear(Color.Blue);
+                window.Clear(background);
                 castleDrawing.Draw(window, font, castle, player);
                 window.Display();
             }

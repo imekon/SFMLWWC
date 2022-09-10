@@ -8,8 +8,8 @@ namespace SFMLWWC
 {
     internal class Castle
     {
-        public const int WIDTH = 6;
-        public const int HEIGHT = 6;
+        public const int WIDTH = 8;
+        public const int HEIGHT = 8;
         public const int DEPTH = 50;
         private Random random;
         private Room[,,] rooms;
