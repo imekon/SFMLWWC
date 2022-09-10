@@ -2,16 +2,16 @@
 {
     internal class Item
     {
-        private ItemType itemType;
+        private Content contents;
         private float itemValue;
 
-        public Item(ItemType itemType, float value)
+        public Item(Content contents, float value)
         {
-            this.itemType = itemType;
+            this.contents = contents;
             itemValue = value;
         }
 
-        public ItemType ItemType => itemType;
+        public Content Contents => contents;
         public float Value { get => itemValue; set { itemValue = value; } }
     }
 }

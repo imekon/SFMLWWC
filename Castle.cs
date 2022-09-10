@@ -30,22 +30,21 @@
                 var y = random.NextInt64(HEIGHT);
 
                 var room = rooms[x, y, z];
-                room.Contents = Content.StairsDown;
+                room.Items.Add(new Item(Content.StairsDown, 0));
             }
 
             // Set stairs up
             for (var z = 1; z < DEPTH - 1; z++)
             {
                 var room = GetEmptyRoom(z);
-                room.Contents = Content.StairsUp;
+                room.Items.Add(new Item(Content.StairsUp, 0));
             }
 
             // Gold!
             for(var z = 0; z < DEPTH; z++)
             {
                 var room = GetEmptyRoom(z);
-                room.Contents = Content.Gold;
-                room.Item = new Item(ItemType.Gold, 100);
+                room.Items.Add(new Item(Content.Gold, 100));
             }
         }
 
@@ -57,7 +56,10 @@
         public Content GetRoomContents(int x, int y, int z)
         {
             var room = GetRoom(x, y, z);
-            return room.Contents;
+            if (!room.Items.Any())
+                return Content.Empty;
+
+            return room.Items[0].Contents;
         }
 
         public Content GetRoomContents(Actor player)
@@ -76,12 +78,24 @@
             var room = GetRoom(player.X, player.Y, player.Z);
             room.Visited = true;
 
-            switch(room.Contents)
+            if (!room.Items.Any())
+                return;
+
+            var list = new List<Item>();
+
+            foreach (var item in room.Items)
             {
-                case Content.Gold:
-                    PickupItem(room, player);
-                    break;
+                switch (item.Contents)
+                {
+                    case Content.Gold:
+                        PickupItem(room, player);
+                        list.Add(item);
+                        break;
+                }
             }
+
+            foreach (var item in list)
+                room.Items.Remove(item);
         }
 
         private Room GetEmptyRoom(int z)
@@ -92,7 +106,7 @@
                 var y = random.NextInt64(HEIGHT);
 
                 var room = rooms[x, y, z];
-                if (room.Contents == Content.Empty)
+                if (!room.Items.Any())
                 {
                     return room;
                 }
@@ -101,18 +115,14 @@
 
         private void PickupItem(Room room, Actor actor)
         {
-            var item = room.Item;
-            if (item == null)
-                return;
-
-            room.Contents = Content.Empty;
-            room.Item = null;
-
-            switch(item.ItemType)
+            foreach(var item in room.Items)
             {
-                case ItemType.Gold:
-                    actor.Gold = actor.Gold + (int)item.Value;
-                    break;
+                switch(item.Contents)
+                {
+                    case Content.Gold:
+                        actor.Gold = actor.Gold + (int)item.Value;
+                        break;
+                }
             }
         }
     }

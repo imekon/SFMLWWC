@@ -4,20 +4,17 @@
     {
         private bool visited;
         private bool tripped;
-        private Content contents;
-        private Item? item;
+        private List<Item> items;
 
         public Room()
         {
             visited = false;
             tripped = false;
-            contents = Content.Empty;
-            item = null;
+            items = new List<Item>();
         }
 
         public bool Visited { get { return visited; } set { visited = value; } }
         public bool Tripped { get { return tripped; } set { tripped = value; } }
-        public Content Contents { get { return contents; } set { contents = value; } }
-        public Item? Item { get => item; set { item = value; } }
+        public List<Item> Items => items;
     }
 }
