@@ -5,6 +5,7 @@
         Empty,
         StairsUp,
         StairsDown,
+        Gold,
         Sink,
         Warp,
         Fountain,

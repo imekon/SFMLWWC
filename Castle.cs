@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SFMLWWC
+﻿namespace SFMLWWC
 {
     internal class Castle
     {
@@ -45,6 +39,14 @@ namespace SFMLWWC
                 var room = GetEmptyRoom(z);
                 room.Contents = Content.StairsUp;
             }
+
+            // Gold!
+            for(var z = 0; z < DEPTH; z++)
+            {
+                var room = GetEmptyRoom(z);
+                room.Contents = Content.Gold;
+                room.Item = new Item(ItemType.Gold, 100);
+            }
         }
 
         public Room GetRoom(int x, int y, int z)
@@ -52,10 +54,15 @@ namespace SFMLWWC
             return rooms[x, y, z];
         }
 
-        public Content GetDrawingContents(int x, int y, int z)
+        public Content GetRoomContents(int x, int y, int z)
         {
             var room = GetRoom(x, y, z);
             return room.Contents;
+        }
+
+        public Content GetRoomContents(Actor player)
+        {
+            return GetRoomContents(player.X, player.Y, player.Z);
         }
 
         public bool GetVisible(int x, int y, int z)
@@ -68,6 +75,13 @@ namespace SFMLWWC
         {
             var room = GetRoom(player.X, player.Y, player.Z);
             room.Visited = true;
+
+            switch(room.Contents)
+            {
+                case Content.Gold:
+                    PickupItem(room, player);
+                    break;
+            }
         }
 
         private Room GetEmptyRoom(int z)
@@ -82,6 +96,23 @@ namespace SFMLWWC
                 {
                     return room;
                 }
+            }
+        }
+
+        private void PickupItem(Room room, Actor actor)
+        {
+            var item = room.Item;
+            if (item == null)
+                return;
+
+            room.Contents = Content.Empty;
+            room.Item = null;
+
+            switch(item.ItemType)
+            {
+                case ItemType.Gold:
+                    actor.Gold = actor.Gold + (int)item.Value;
+                    break;
             }
         }
     }

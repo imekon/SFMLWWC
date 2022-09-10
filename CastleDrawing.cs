@@ -31,10 +31,13 @@ namespace SFMLWWC
                     return ".";
 
                 case Content.StairsUp:
-                    return ">";
+                    return "<";
 
                 case Content.StairsDown:
-                    return "<";
+                    return ">";
+
+                case Content.Gold:
+                    return "$";
 
                 default:
                     return "X";
@@ -43,13 +46,15 @@ namespace SFMLWWC
 
         public void Draw(RenderWindow window, Font font, Castle castle, Actor player)
         {
+            Text text;
+
             for(var y = 0; y < Castle.HEIGHT; y++)
             {
                 for (var x = 0; x < Castle.WIDTH; x++)
                 {
-                    var contents = castle.GetDrawingContents(x, y, player.Z);
+                    var contents = castle.GetRoomContents(x, y, player.Z);
                     var visible = castle.GetVisible(x, y, player.Z);
-                    var text = new Text(ConvertContents(contents, visible), font);
+                    text = new Text(ConvertContents(contents, visible), font);
                     text.Position = new Vector2f(x * HORZ_SPACING + LEFT_MARGIN, y * VERT_SPACING + TOP_MARGIN);
 
                     window.Draw(text);
@@ -61,6 +66,14 @@ namespace SFMLWWC
 
             cursor2.Position = new Vector2f(player.X * HORZ_SPACING + CURSOR_OFFSET + LEFT_MARGIN, player.Y * VERT_SPACING + TOP_MARGIN);
             window.Draw(cursor2);
+
+            text = new Text($"Level: {player.Z + 1}", font);
+            text.Position = new Vector2f(10, 300);
+            window.Draw(text);
+
+            text = new Text($"Gold: {player.Gold}", font);
+            text.Position = new Vector2f(10, 330);
+            window.Draw(text);
         }
     }
 }
