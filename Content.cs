@@ -5,10 +5,13 @@
         Empty,
         StairsUp,
         StairsDown,
-        Gold,
         Sink,
         Warp,
+        Gold,
+        Torch,
+        Lantern,
         Fountain,
-        Altar
+        Altar,
+        Shrine
     }
 }
