@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Pixuf.ttf" />
+    <None Remove="MODES___.TTF" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Pixuf.ttf">
+    <Content Include="MODES___.TTF">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

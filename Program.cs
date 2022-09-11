@@ -8,7 +8,7 @@ namespace SFMLWWC
         static void Main(string[] args)
         {
             var random = new Random();
-            var font = new Font("pixuf.ttf");
+            var font = new Font("MODES___.ttf");
 
             var player = new Actor();
 

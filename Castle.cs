@@ -56,7 +56,7 @@
         public Content GetRoomContents(int x, int y, int z)
         {
             var room = GetRoom(x, y, z);
-            if (!room.Items.Any())
+            if (room.IsEmpty)
                 return Content.Empty;
 
             return room.Items[0].Contents;
@@ -78,7 +78,7 @@
             var room = GetRoom(player.X, player.Y, player.Z);
             room.Visited = true;
 
-            if (!room.Items.Any())
+            if (room.IsEmpty)
                 return;
 
             var list = new List<Item>();
@@ -106,7 +106,7 @@
                 var y = random.NextInt64(HEIGHT);
 
                 var room = rooms[x, y, z];
-                if (!room.Items.Any())
+                if (room.IsEmpty)
                 {
                     return room;
                 }
