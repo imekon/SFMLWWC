@@ -45,14 +45,14 @@ namespace SFMLWWC
                 var y = random.NextInt64(HEIGHT);
 
                 var room = rooms[x, y, z];
-                room.Items.Add(new Item(Content.StairsDown, 0));
+                room.Items.Add(Item.CreateStairsDown());
             }
 
             // Set stairs up
             for (var z = 1; z < DEPTH - 1; z++)
             {
                 var room = GetEmptyRoom(z);
-                room.Items.Add(new Item(Content.StairsUp, 0));
+                room.Items.Add(Item.CreateStairsUp());
             }
 
             for(var z = 0; z < DEPTH; z++)
@@ -60,11 +60,11 @@ namespace SFMLWWC
                 var room = GetEmptyRoom(z);
 
                 // Gold!
-                room.Items.Add(new Item(Content.Gold, 10 + z * 10));
+                room.Items.Add(Item.CreateGold(10 + z * 10));
 
                 // Food
                 if (random.NextInt64(100) < 50)
-                    room.Items.Add(new Item(Content.Food, 10));
+                    room.Items.Add(Item.CreateFood(10));
             }
 
             hub.Subscribe<StatusMessage>(OnStatusMessage);
