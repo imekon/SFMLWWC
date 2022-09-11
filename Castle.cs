@@ -77,6 +77,11 @@ namespace SFMLWWC
             return rooms[x, y, z];
         }
 
+        public Room GetRoom(Actor actor)
+        {
+            return rooms[actor.X, actor.Y, actor.Z];
+        }
+
         public Content GetRoomContents(int x, int y, int z)
         {
             var room = GetRoom(x, y, z);
@@ -95,6 +100,34 @@ namespace SFMLWWC
         {
             var room = GetRoom(x, y, z);
             return room.Visited;
+        }
+
+        public void Execute(Actor player)
+        {
+            var room = GetRoom(player);
+            if (room.IsEmpty)
+                return;
+
+            var item = room.Items[0];
+            var contents = item.Contents;
+
+            switch (contents)
+            {
+                case Content.StairsUp:
+                    player.Z = player.Z - 1;
+                    player.Energy = player.Energy - 3;
+                    break;
+
+                case Content.StairsDown:
+                    player.Z = player.Z + 1;
+                    player.Energy = player.Energy - 2;
+                    break;
+
+                case Content.Food:
+                    player.Energy = player.Energy + 10;
+                    room.Items.Remove(item);
+                    break;
+            }
         }
 
         public void Update(Time elapsed, Actor player)

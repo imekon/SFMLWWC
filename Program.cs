@@ -54,7 +54,7 @@ namespace SFMLWWC
                         break;
 
                     case Keyboard.Key.F:
-                        Execute(castle, player);
+                        castle.Execute(player);
                         break;
 
                     case Keyboard.Key.Escape:
@@ -71,28 +71,6 @@ namespace SFMLWWC
                 window.Clear(background);
                 castleDrawing.Draw(window, font, castle, player);
                 window.Display();
-            }
-        }
-
-        private static void Execute(Castle castle, Actor player)
-        {
-            var contents = castle.GetRoomContents(player);
-
-            switch(contents)
-            {
-                case Content.StairsUp:
-                    player.Z = player.Z - 1;
-                    player.Energy = player.Energy - 3;
-                    break;
-
-                case Content.StairsDown:
-                    player.Z = player.Z + 1;
-                    player.Energy = player.Energy - 2;
-                    break;
-
-                case Content.Food:
-                    player.Energy = player.Energy + 10;
-                    break;
             }
         }
     }
