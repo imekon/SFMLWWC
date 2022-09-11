@@ -63,5 +63,24 @@
             item.properties.Add(new Property<int>(PropertyType.IntValue, value));
             return item;
         }
+
+        public static Item CreateTorch(int value)
+        {
+            var item = new Item(Content.Torch);
+            item.properties.Add(new Property<int>(PropertyType.IntValue, value));
+            return item;
+        }
+
+        public static Item CreateSinkRoom()
+        {
+            var item = new Item(Content.Sink);
+            return item;
+        }
+
+        public static Item CreateWarpRoom()
+        {
+            var item = new Item(Content.Warp);
+            return item;
+        }
     }
 }

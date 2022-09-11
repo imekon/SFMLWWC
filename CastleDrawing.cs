@@ -22,7 +22,7 @@ namespace SFMLWWC
             playerText = new Text("@", font);
         }
 
-        private static string ConvertContents(Content contents, bool visible)
+        private static string ConvertContents(Content contents, bool visible, bool tripped)
         {
             if (!visible)
                 return "?";
@@ -44,6 +44,21 @@ namespace SFMLWWC
                 case Content.Food:
                     return ",";
 
+                case Content.Torch:
+                    return "T";
+
+                case Content.Sink:
+                    if (tripped)
+                        return "S";
+                    else
+                        return ".";
+
+                case Content.Warp:
+                    if (tripped)
+                        return "W";
+                    else
+                        return ".";
+
                 default:
                     return "X";
             }
@@ -59,7 +74,8 @@ namespace SFMLWWC
                 {
                     var contents = castle.GetRoomContents(x, y, player.Z);
                     var visible = castle.GetVisible(x, y, player.Z);
-                    text = new Text(ConvertContents(contents, visible), font);
+                    var tripped = castle.GetTripped(x, y, player.Z);
+                    text = new Text(ConvertContents(contents, visible, tripped), font);
                     text.Position = new Vector2f(x * HORZ_SPACING + LEFT_MARGIN, y * VERT_SPACING + TOP_MARGIN);
 
                     window.Draw(text);
@@ -93,6 +109,10 @@ namespace SFMLWWC
             window.Draw(text);
 
             text = new Text($"Gold:    {player.Gold}", font);
+            text.Position = new Vector2f(10, 300 + line * 30); line++;
+            window.Draw(text);
+
+            text = new Text($"Torches: {player.TorchCount}", font);
             text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
 

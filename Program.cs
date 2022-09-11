@@ -57,6 +57,10 @@ namespace SFMLWWC
                         castle.Execute(player);
                         break;
 
+                    case Keyboard.Key.L:
+                        player.Light();
+                        break;
+
                     case Keyboard.Key.Escape:
                         window.Close();
                         break;

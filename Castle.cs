@@ -63,8 +63,24 @@ namespace SFMLWWC
                 room.Items.Add(Item.CreateGold(10 + z * 10));
 
                 // Food
+                room = GetEmptyRoom(z);
                 if (random.NextInt64(100) < 50)
                     room.Items.Add(Item.CreateFood(10));
+
+                // Torch
+                room = GetEmptyRoom(z);
+                if (random.NextInt64(100) < 50)
+                    room.Items.Add(Item.CreateTorch(25));
+
+                // Sink room
+                room = GetEmptyRoom(z);
+                if (random.NextInt64(100) < 20 + z)
+                    room.Items.Add(Item.CreateSinkRoom());
+
+                // Warp room
+                room = GetEmptyRoom(z);
+                if (random.NextInt64(100) < 10 + z / 2)
+                    room.Items.Add(Item.CreateWarpRoom());
             }
 
             hub.Subscribe<StatusMessage>(OnStatusMessage);
@@ -102,6 +118,12 @@ namespace SFMLWWC
             return room.Visited;
         }
 
+        public bool GetTripped(int x, int y, int z)
+        {
+            var room = GetRoom(x, y, z);
+            return room.Tripped;
+        }
+
         public void Execute(Actor player)
         {
             var room = GetRoom(player);
@@ -127,6 +149,11 @@ namespace SFMLWWC
                     player.Energy = player.Energy + 10;
                     room.Items.Remove(item);
                     break;
+
+                case Content.Torch:
+                    player.Items.Add(item);
+                    room.Items.Remove(item);
+                    break;
             }
         }
 
@@ -143,6 +170,13 @@ namespace SFMLWWC
             var room = GetRoom(player.X, player.Y, player.Z);
             room.Visited = true;
 
+            if (player.Lighting > 0)
+            {
+                for (var y = player.Y - 1; y < player.Y + 2; y++)
+                    for (var x = player.X - 1; x < player.X + 2; x++)
+                        DoAction(x, y, player.Z, r => r.Visited = true);
+            }
+
             if (room.IsEmpty)
                 return;
 
@@ -156,11 +190,43 @@ namespace SFMLWWC
                         PickupItem(room, player);
                         list.Add(item);
                         break;
+
+                    case Content.Sink:
+                        room.Tripped = true;
+                        player.Z = player.Z + 1;
+                        player.Energy = player.Energy - 20;
+                        messengerHub.Publish<StatusMessage>(new StatusMessage(this, "Player fell down a sink hole!"));
+                        break;
+
+                    case Content.Warp:
+                        room.Tripped = true;
+                        player.Z = player.Z + (int)random.NextInt64(40);
+                        if (player.Z > DEPTH)
+                            player.Z = DEPTH - 1;
+                        player.Energy = player.Energy - 40;
+                        messengerHub.Publish<StatusMessage>(new StatusMessage(this, "Player stepped into a warp!"));
+                        break;
                 }
             }
 
             foreach (var item in list)
                 room.Items.Remove(item);
+        }
+
+        private void DoAction(int x, int y, int z, Action<Room> action)
+        {
+            var cx = x;
+            var cy = y;
+
+            if (cx < 0) cx = WIDTH - 1;
+            if (cx >= WIDTH) cx = 0;
+
+            if (cy < 0) cy = HEIGHT - 1;
+            if (cy >= HEIGHT) cy = 0;
+
+            var room = rooms[cx, cy, z];
+
+            action(room);
         }
 
         private Room GetEmptyRoom(int z)

@@ -13,6 +13,7 @@ namespace SFMLWWC
         private int maxEnergy;
         private int shields;
         private int gold;
+        private int lighting;
         private List<Item> items;
 
         private Time energyWhen;
@@ -27,6 +28,7 @@ namespace SFMLWWC
             maxEnergy = 100;
             shields = 100;
             gold = 50;
+            lighting = 0;
             items = new List<Item>();
             energyWhen = new Time();
         }
@@ -38,6 +40,35 @@ namespace SFMLWWC
         public int MinEnergy => minEnergy;
         public int Shields { get { return shields; } set { shields = value; } }
         public int Gold { get => gold; set { gold = value; } }
+        public int Lighting => lighting;
+
+        public int TorchCount
+        {
+            get
+            {
+                int count = 0;
+
+                foreach(var item in items)
+                {
+                    if (item.Contents == Content.Torch)
+                        count++;
+                }
+
+                return count;
+            }
+        }
+
+        private Item? FindLight()
+        {
+            foreach(var item in items)
+            {
+                if (item.Contents == Content.Torch || item.Contents == Content.Lantern)
+                    return item;
+            }
+
+            return null;
+        }
+
         public List<Item> Items => items;
 
         public void Move(int dx, int dy)
@@ -55,6 +86,9 @@ namespace SFMLWWC
             if (y >= Castle.HEIGHT) y = 0;
 
             energy--;
+
+            if (lighting > 0)
+                lighting--;
         }
 
         public void Update(Time elapsed)
@@ -67,6 +101,16 @@ namespace SFMLWWC
                 if (energy > maxEnergy)
                     energy = maxEnergy;
             }
+        }
+
+        public void Light()
+        {
+            var light = FindLight();
+            if (light == null)
+                return;
+
+            items.Remove(light);
+            lighting += light.Value;
         }
     }
 }
