@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using TinyMessenger;
 
 namespace SFMLWWC
 {
@@ -9,6 +10,9 @@ namespace SFMLWWC
         static void Main(string[] args)
         {
             var random = new Random();
+
+            var hub = new TinyMessengerHub();
+
             var clock = new Clock();
             var font = new Font("MODES___.ttf");
 
@@ -16,7 +20,7 @@ namespace SFMLWWC
             player.X = (int)random.NextInt64(Castle.WIDTH);
             player.Y = (int)random.NextInt64(Castle.HEIGHT);
 
-            var castle = new Castle();
+            var castle = new Castle(hub);
 
             var castleDrawing = new CastleDrawing(font);
 

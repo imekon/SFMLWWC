@@ -1,4 +1,5 @@
 ﻿using SFML.System;
+using TinyMessenger;
 
 namespace SFMLWWC
 {
@@ -8,14 +9,17 @@ namespace SFMLWWC
         public const int HEIGHT = 8;
         public const int DEPTH = 50;
 
+        private TinyMessengerHub messengerHub;
         private string status;
         private Random random;
         private Room[,,] rooms;
         private Time elapsedTime;
         private Time statusWhen;
 
-        public Castle()
+        public Castle(TinyMessengerHub hub)
         {
+            messengerHub = hub;
+
             status = "Ready";
 
             elapsedTime = new Time();
@@ -62,6 +66,8 @@ namespace SFMLWWC
                 if (random.NextInt64(100) < 50)
                     room.Items.Add(new Item(Content.Food, 10));
             }
+
+            hub.Subscribe<StatusMessage>(OnStatusMessage);
         }
 
         public string Status => status;
@@ -147,15 +153,15 @@ namespace SFMLWWC
                 {
                     case Content.Gold:
                         actor.Gold = actor.Gold + (int)item.Value;
-                        SetStatus($"Player picked up {item.Value} gold pieces");
+                        messengerHub.Publish(new StatusMessage(this, $"Player picked up {item.Value} gold pieces"));
                         break;
                 }
             }
         }
 
-        private void SetStatus(string text)
+        private void OnStatusMessage(StatusMessage message)
         {
-            status = text;
+            status = message.Status;
             statusWhen = elapsedTime;
         }
     }
