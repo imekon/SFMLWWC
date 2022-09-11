@@ -5,7 +5,7 @@ namespace SFMLWWC
 {
     internal class CastleDrawing
     {
-        private const int LEFT_MARGIN = 200;
+        private const int LEFT_MARGIN = 250;
         private const int TOP_MARGIN = 50;
         private const int HORZ_SPACING = 40;
         private const int VERT_SPACING = 30;
@@ -13,11 +13,13 @@ namespace SFMLWWC
 
         private Text cursor1;
         private Text cursor2;
+        private Text playerText;
 
         public CastleDrawing(Font font)
         {
             cursor1 = new Text("<", font);
             cursor2 = new Text(">", font);
+            playerText = new Text("@", font);
         }
 
         private static string ConvertContents(Content contents, bool visible)
@@ -38,6 +40,9 @@ namespace SFMLWWC
 
                 case Content.Gold:
                     return "$";
+
+                case Content.Food:
+                    return ",";
 
                 default:
                     return "X";
@@ -64,15 +69,35 @@ namespace SFMLWWC
             cursor1.Position = new Vector2f(player.X * HORZ_SPACING - CURSOR_OFFSET + LEFT_MARGIN, player.Y * VERT_SPACING + TOP_MARGIN);
             window.Draw(cursor1);
 
+            playerText.Position = new Vector2f(player.X * HORZ_SPACING + LEFT_MARGIN, player.Y * VERT_SPACING + TOP_MARGIN);
+            window.Draw(playerText);
+
             cursor2.Position = new Vector2f(player.X * HORZ_SPACING + CURSOR_OFFSET + LEFT_MARGIN, player.Y * VERT_SPACING + TOP_MARGIN);
             window.Draw(cursor2);
 
-            text = new Text($"Level: {player.Z + 1}", font);
-            text.Position = new Vector2f(10, 300);
+            int line = 0;
+            text = new Text($"Level:   {player.Z + 1}", font);
+            text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
 
-            text = new Text($"Gold: {player.Gold}", font);
-            text.Position = new Vector2f(10, 330);
+            text = new Text($"Energy:  {player.Energy}", font);
+            if (player.Energy < player.MinEnergy)
+                text.FillColor = Color.Red;
+
+            text.Position = new Vector2f(10, 300 + line * 30); line++;
+            window.Draw(text);
+            text.FillColor = Color.White;
+
+            text = new Text($"Shields: {player.Shields}", font);
+            text.Position = new Vector2f(10, 300 + line * 30); line++;
+            window.Draw(text);
+
+            text = new Text($"Gold:    {player.Gold}", font);
+            text.Position = new Vector2f(10, 300 + line * 30); line++;
+            window.Draw(text);
+
+            text = new Text(castle.Status, font);
+            text.Position = new Vector2f(10, 550);
             window.Draw(text);
         }
     }

@@ -10,6 +10,7 @@
         Gold,
         Torch,
         Lantern,
+        Food,
         Fountain,
         Altar,
         Shrine

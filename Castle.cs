@@ -1,15 +1,26 @@
-﻿namespace SFMLWWC
+﻿using SFML.System;
+
+namespace SFMLWWC
 {
     internal class Castle
     {
         public const int WIDTH = 8;
         public const int HEIGHT = 8;
         public const int DEPTH = 50;
+
+        private string status;
         private Random random;
         private Room[,,] rooms;
+        private Time elapsedTime;
+        private Time statusWhen;
 
         public Castle()
         {
+            status = "Ready";
+
+            elapsedTime = new Time();
+            statusWhen = new Time();
+
             random = new Random();
 
             rooms = new Room[WIDTH, HEIGHT, DEPTH];
@@ -40,13 +51,20 @@
                 room.Items.Add(new Item(Content.StairsUp, 0));
             }
 
-            // Gold!
             for(var z = 0; z < DEPTH; z++)
             {
                 var room = GetEmptyRoom(z);
-                room.Items.Add(new Item(Content.Gold, 100));
+
+                // Gold!
+                room.Items.Add(new Item(Content.Gold, 10 + z * 10));
+
+                // Food
+                if (random.NextInt64(100) < 50)
+                    room.Items.Add(new Item(Content.Food, 10));
             }
         }
+
+        public string Status => status;
 
         public Room GetRoom(int x, int y, int z)
         {
@@ -73,8 +91,16 @@
             return room.Visited;
         }
 
-        public void Update(Actor player)
+        public void Update(Time elapsed, Actor player)
         {
+            elapsedTime = elapsed;
+
+            player.Update(elapsedTime);
+
+            var statusDur = elapsedTime - statusWhen;
+            if (statusDur.AsSeconds() > 3)
+                status = "Ready";
+
             var room = GetRoom(player.X, player.Y, player.Z);
             room.Visited = true;
 
@@ -121,9 +147,16 @@
                 {
                     case Content.Gold:
                         actor.Gold = actor.Gold + (int)item.Value;
+                        SetStatus($"Player picked up {item.Value} gold pieces");
                         break;
                 }
             }
+        }
+
+        private void SetStatus(string text)
+        {
+            status = text;
+            statusWhen = elapsedTime;
         }
     }
 }

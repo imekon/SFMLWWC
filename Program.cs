@@ -1,4 +1,5 @@
 ﻿using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 
 namespace SFMLWWC
@@ -8,9 +9,12 @@ namespace SFMLWWC
         static void Main(string[] args)
         {
             var random = new Random();
+            var clock = new Clock();
             var font = new Font("MODES___.ttf");
 
             var player = new Actor();
+            player.X = (int)random.NextInt64(Castle.WIDTH);
+            player.Y = (int)random.NextInt64(Castle.HEIGHT);
 
             var castle = new Castle();
 
@@ -59,7 +63,7 @@ namespace SFMLWWC
             while(window.IsOpen)
             {
                 window.DispatchEvents();
-                castle.Update(player);
+                castle.Update(clock.ElapsedTime, player);
                 window.Clear(background);
                 castleDrawing.Draw(window, font, castle, player);
                 window.Display();
@@ -74,10 +78,16 @@ namespace SFMLWWC
             {
                 case Content.StairsUp:
                     player.Z = player.Z - 1;
+                    player.Energy = player.Energy - 3;
                     break;
 
                 case Content.StairsDown:
                     player.Z = player.Z + 1;
+                    player.Energy = player.Energy - 2;
+                    break;
+
+                case Content.Food:
+                    player.Energy = player.Energy + 10;
                     break;
             }
         }
