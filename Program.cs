@@ -35,22 +35,26 @@ namespace SFMLWWC
                 {
                     case Keyboard.Key.Left:
                     case Keyboard.Key.A:
-                        player.Move(-1, 0);
+                        if (castle.Check(player, -1, 0))
+                            player.Move(-1, 0);
                         break;
 
                     case Keyboard.Key.Right:
                     case Keyboard.Key.D:
-                        player.Move(1, 0);
+                        if (castle.Check(player, 1, 0))
+                            player.Move(1, 0);
                         break;
 
                     case Keyboard.Key.Up:
                     case Keyboard.Key.W:
-                        player.Move(0, -1);
+                        if (castle.Check(player, 0, -1))
+                            player.Move(0, -1);
                         break;
 
                     case Keyboard.Key.Down:
                     case Keyboard.Key.S:
-                        player.Move(0, 1);
+                        if (castle.Check(player, 0, 1))
+                            player.Move(0, 1);
                         break;
 
                     case Keyboard.Key.F:

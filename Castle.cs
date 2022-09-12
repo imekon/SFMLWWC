@@ -119,11 +119,6 @@ namespace SFMLWWC
             return room.Monsters[0];
         }
 
-        public Content GetRoomContents(Actor player)
-        {
-            return GetRoomContents(player.X, player.Y, player.Z);
-        }
-
         public bool GetVisible(int x, int y, int z)
         {
             var room = GetRoom(x, y, z);
@@ -176,12 +171,29 @@ namespace SFMLWWC
                     player.Energy = player.Energy + 10;
                     room.Items.Remove(item);
                     break;
-
-                case Content.Torch:
-                    player.Items.Add(item);
-                    room.Items.Remove(item);
-                    break;
             }
+        }
+
+        public (int cx, int cy) Clamp(int x, int y)
+        {
+            if (x < 0) x = WIDTH - 1;
+            if (x >= WIDTH) x = 0;
+
+            if (y < 0) y = HEIGHT - 1;
+            if (y >= HEIGHT) y = 0;
+
+            return (x, y);
+        }
+
+        public bool Check(Actor actor, int dx, int dy)
+        {
+            var x = actor.X + dx;
+            var y = actor.Y + dy;
+
+            (x, y) = Clamp(x, y);
+
+            var monster = GetRoomMonster(x, y, actor.Z);
+            return monster == null;
         }
 
         public void Update(Time elapsed, Actor player)
@@ -214,6 +226,11 @@ namespace SFMLWWC
                 switch (item.Contents)
                 {
                     case Content.Gold:
+                        PickupItem(room, player);
+                        list.Add(item);
+                        break;
+
+                    case Content.Torch:
                         PickupItem(room, player);
                         list.Add(item);
                         break;
@@ -280,6 +297,11 @@ namespace SFMLWWC
                     case Content.Gold:
                         actor.Gold = actor.Gold + (int)item.Value;
                         messengerHub.Publish(new StatusMessage(this, $"Player picked up {item.Value} gold pieces"));
+                        break;
+
+                    case Content.Torch:
+                        actor.Items.Add(item);
+                        messengerHub.Publish(new StatusMessage(this, "Player picked up a torch"));
                         break;
                 }
             }

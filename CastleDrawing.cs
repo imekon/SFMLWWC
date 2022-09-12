@@ -136,7 +136,7 @@ namespace SFMLWWC
             text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
 
-            text = new Text($"Torches: {player.TorchCount}", font);
+            text = new Text($"Torches: {player.TorchCount} ({player.Lighting})", font);
             text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
 
