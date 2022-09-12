@@ -70,7 +70,7 @@ namespace SFMLWWC
                 // Torch
                 room = GetEmptyRoom(z);
                 if (random.NextInt64(100) < 50)
-                    room.Items.Add(Item.CreateTorch(25));
+                    room.Items.Add(Item.CreateTorch(50));
 
                 // Sink room
                 room = GetEmptyRoom(z);
@@ -81,6 +81,9 @@ namespace SFMLWWC
                 room = GetEmptyRoom(z);
                 if (random.NextInt64(100) < 10 + z / 2)
                     room.Items.Add(Item.CreateWarpRoom());
+
+                room = GetEmptyRoom(z);
+                CreateMonster(room, z);
             }
 
             hub.Subscribe<StatusMessage>(OnStatusMessage);
@@ -107,6 +110,15 @@ namespace SFMLWWC
             return room.Items[0].Contents;
         }
 
+        public Actor? GetRoomMonster(int x, int y, int z)
+        {
+            var room = GetRoom(x, y, z);
+            if (!room.Monsters.Any())
+                return null;
+
+            return room.Monsters[0];
+        }
+
         public Content GetRoomContents(Actor player)
         {
             return GetRoomContents(player.X, player.Y, player.Z);
@@ -122,6 +134,21 @@ namespace SFMLWWC
         {
             var room = GetRoom(x, y, z);
             return room.Tripped;
+        }
+
+        private void CreateMonster(Room room, int z)
+        {
+            if (z == DEPTH - 1)
+            {
+                var monster = new Actor(ActorType.WanderingWizard);
+                room.Monsters.Add(monster);
+            }
+
+            if (random.NextInt64(100) < 5)
+            {
+                var monster = new Actor(ActorType.Mouse);
+                room.Monsters.Add(monster);
+            }
         }
 
         public void Execute(Actor player)

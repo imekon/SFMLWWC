@@ -16,7 +16,7 @@ namespace SFMLWWC
             var clock = new Clock();
             var font = new Font("MODES___.ttf");
 
-            var player = new Actor();
+            var player = new Actor(ActorType.Player);
             player.X = (int)random.NextInt64(Castle.WIDTH);
             player.Y = (int)random.NextInt64(Castle.HEIGHT);
 

@@ -5,6 +5,7 @@ namespace SFMLWWC
 {
     internal class Actor
     {
+        private ActorType type;
         private int x;
         private int y;
         private int z;
@@ -18,8 +19,9 @@ namespace SFMLWWC
 
         private Time energyWhen;
 
-        public Actor()
+        public Actor(ActorType type)
         {
+            this.type = type;
             x = 0;
             y = 0;
             z = 0;
@@ -33,6 +35,7 @@ namespace SFMLWWC
             energyWhen = new Time();
         }
 
+        public ActorType ActorType => type;
         public int X { get { return x; } set { x = value; } }
         public int Y { get { return y; } set { y = value; } }
         public int Z { get { return z; } set { z = value; } }

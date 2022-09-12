@@ -22,10 +22,33 @@ namespace SFMLWWC
             playerText = new Text("@", font);
         }
 
-        private static string ConvertContents(Content contents, bool visible, bool tripped)
+        private static string ConvertContents(Content contents, Actor? monster, bool visible, bool tripped)
         {
             if (!visible)
                 return "?";
+
+            if (monster != null)
+            {
+                switch(monster.ActorType)
+                {
+                    case ActorType.Player:
+                    case ActorType.Wizard:
+                    case ActorType.WanderingWizard:
+                        return "@";
+
+                    case ActorType.Vendor:
+                        return "V";
+
+                    case ActorType.Mouse:
+                    case ActorType.Rat:
+                    case ActorType.Dog:
+                        return "m";
+
+                    case ActorType.Vampire:
+                    case ActorType.Wyvern:
+                        return "M";
+                }
+            }
 
             switch(contents)
             {
@@ -75,7 +98,8 @@ namespace SFMLWWC
                     var contents = castle.GetRoomContents(x, y, player.Z);
                     var visible = castle.GetVisible(x, y, player.Z);
                     var tripped = castle.GetTripped(x, y, player.Z);
-                    text = new Text(ConvertContents(contents, visible, tripped), font);
+                    var monster = castle.GetRoomMonster(x, y, player.Z);
+                    text = new Text(ConvertContents(contents, monster, visible, tripped), font);
                     text.Position = new Vector2f(x * HORZ_SPACING + LEFT_MARGIN, y * VERT_SPACING + TOP_MARGIN);
 
                     window.Draw(text);
