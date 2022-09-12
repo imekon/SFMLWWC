@@ -185,7 +185,7 @@ namespace SFMLWWC
             return (x, y);
         }
 
-        public bool Check(Actor actor, int dx, int dy)
+        public Actor? Check(Actor actor, int dx, int dy)
         {
             var x = actor.X + dx;
             var y = actor.Y + dy;
@@ -193,7 +193,23 @@ namespace SFMLWWC
             (x, y) = Clamp(x, y);
 
             var monster = GetRoomMonster(x, y, actor.Z);
-            return monster == null;
+            return monster;
+        }
+
+        public bool MoveOrAttack(Actor player, int dx, int dy)
+        {
+            var monster = Check(player, dx, dy);
+            if (monster == null)
+            {
+                player.Move(dx, dy);
+                return true;
+            }
+
+            monster.Awake = true;
+            monster.Energy = monster.Energy - 5;
+            player.Energy = player.Energy - 5;
+
+            return false;
         }
 
         public void Update(Time elapsed, Actor player)

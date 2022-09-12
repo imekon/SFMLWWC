@@ -6,6 +6,7 @@ namespace SFMLWWC
     internal class Actor
     {
         private ActorType type;
+        private bool awake;
         private int x;
         private int y;
         private int z;
@@ -22,6 +23,7 @@ namespace SFMLWWC
         public Actor(ActorType type)
         {
             this.type = type;
+            awake = false;
             x = 0;
             y = 0;
             z = 0;
@@ -36,6 +38,7 @@ namespace SFMLWWC
         }
 
         public ActorType ActorType => type;
+        public bool Awake { get => awake; set { awake = value; } }
         public int X { get { return x; } set { x = value; } }
         public int Y { get { return y; } set { y = value; } }
         public int Z { get { return z; } set { z = value; } }
@@ -96,6 +99,8 @@ namespace SFMLWWC
 
         public void Update(Time elapsed)
         {
+            if (energy < 0) energy = 0;
+
             var energyDur = elapsed - energyWhen;
             if (energyDur.AsSeconds() > 1)
             {

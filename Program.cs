@@ -17,6 +17,7 @@ namespace SFMLWWC
             var font = new Font("MODES___.ttf");
 
             var player = new Actor(ActorType.Player);
+            player.Awake = true;
             player.X = (int)random.NextInt64(Castle.WIDTH);
             player.Y = (int)random.NextInt64(Castle.HEIGHT);
 
@@ -31,30 +32,28 @@ namespace SFMLWWC
             window.SetKeyRepeatEnabled(false);
             window.KeyPressed += (sender, args) => 
             {
+                Actor? monster;
+
                 switch(args.Code)
                 {
                     case Keyboard.Key.Left:
                     case Keyboard.Key.A:
-                        if (castle.Check(player, -1, 0))
-                            player.Move(-1, 0);
+                        castle.MoveOrAttack(player, -1, 0);
                         break;
 
                     case Keyboard.Key.Right:
                     case Keyboard.Key.D:
-                        if (castle.Check(player, 1, 0))
-                            player.Move(1, 0);
+                        castle.MoveOrAttack(player, 1, 0);
                         break;
 
                     case Keyboard.Key.Up:
                     case Keyboard.Key.W:
-                        if (castle.Check(player, 0, -1))
-                            player.Move(0, -1);
+                        castle.MoveOrAttack(player, 0, -1);
                         break;
 
                     case Keyboard.Key.Down:
                     case Keyboard.Key.S:
-                        if (castle.Check(player, 0, 1))
-                            player.Move(0, 1);
+                        castle.MoveOrAttack(player, 0, 1);
                         break;
 
                     case Keyboard.Key.F:

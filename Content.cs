@@ -11,6 +11,7 @@
         Torch,
         Lantern,
         Food,
+        Fez,
         Fountain,
         Altar,
         Shrine
