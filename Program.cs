@@ -14,6 +14,8 @@ namespace WWC
         private static Text? statusText = null;
         private static Actor? player = null;
         private static Castle? castle = null;
+        private static int cursor = 0;
+        private static bool inCommand = false;
 
         static void Main(string[] args)
         {
@@ -26,7 +28,6 @@ namespace WWC
             script.Options.DebugPrint = s => Print(s);
 
             var commandBuffer = new StringBuilder();
-            var inCommand = false;
 
             var random = new Random();
 
@@ -37,14 +38,18 @@ namespace WWC
 
             player = new Actor(ActorType.Player);
             player.Awake = true;
-            player.X = (int)random.NextInt64(Castle.WIDTH);
-            player.Y = (int)random.NextInt64(Castle.HEIGHT);
+            player.X = (int)random.Next(Castle.WIDTH);
+            player.Y = (int)random.Next(Castle.HEIGHT);
 
             castle = new Castle(hub);
 
             var castleDrawing = new CastleDrawing(font);
 
+            var image = new Image("wwc.png");
+
             var window = new RenderWindow(new VideoMode(800, 600), "Wandering Wizard's Castle");
+
+            window.SetIcon(32, 32, image.Pixels);
 
             window.Closed += (sender, args) => window.Close();
             
@@ -87,6 +92,7 @@ namespace WWC
                         case Keyboard.Key.Y:
                         case Keyboard.Key.Z:
                             commandBuffer.Append((char)(args.Code + 'a'));
+                            cursor++;
                             break;
 
                         case Keyboard.Key.Num0:
@@ -94,6 +100,8 @@ namespace WWC
                                 commandBuffer.Append(")");
                             else
                                 commandBuffer.Append("0");
+
+                            cursor++;
                             break;
 
                         case Keyboard.Key.Num2:
@@ -101,6 +109,8 @@ namespace WWC
                                 commandBuffer.Append("\"");
                             else
                                 commandBuffer.Append("2");
+
+                            cursor++;
                             break;
 
                         case Keyboard.Key.Num1:
@@ -111,6 +121,7 @@ namespace WWC
                         case Keyboard.Key.Num7:
                         case Keyboard.Key.Num8:
                             commandBuffer.Append((char)(args.Code + '0' - Keyboard.Key.Num0));
+                            cursor++;
                             break;
 
                         case Keyboard.Key.Num9:
@@ -118,6 +129,18 @@ namespace WWC
                                 commandBuffer.Append("(");
                             else
                                 commandBuffer.Append("9");
+
+                            cursor++;
+                            break;
+
+                        case Keyboard.Key.Quote:
+                            // NEITHER WORKS!!!
+                            if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) || Keyboard.IsKeyPressed(Keyboard.Key.RShift))
+                                commandBuffer.Append("@");
+                            else
+                                commandBuffer.Append("'");
+
+                            cursor++;
                             break;
 
                         case Keyboard.Key.LBracket:
@@ -125,6 +148,8 @@ namespace WWC
                                 commandBuffer.Append("{");
                             else
                                 commandBuffer.Append("[");
+
+                            cursor++;
                             break;
 
                         case Keyboard.Key.RBracket:
@@ -132,14 +157,23 @@ namespace WWC
                                 commandBuffer.Append("}");
                             else
                                 commandBuffer.Append("]");
+
+                            cursor++;
                             break;
 
                         case Keyboard.Key.Space:
                             commandBuffer.Append(" ");
+                            cursor++;
                             break;
 
                         case Keyboard.Key.Comma:
                             commandBuffer.Append(",");
+                            cursor++;
+                            break;
+
+                        case Keyboard.Key.Backspace:
+                            commandBuffer.Remove(commandBuffer.Length - 1, 1);
+                            cursor--;
                             break;
 
                         case Keyboard.Key.Enter:
@@ -152,6 +186,7 @@ namespace WWC
                                 hub.Publish(new StatusMessage(new object(), ex.Message));
                             }
                             commandBuffer.Clear();
+                            cursor = 0;
                             break;
                     }
 
@@ -236,12 +271,16 @@ namespace WWC
             player.X = x;
             player.Y = y;
             player.Z = z;
+
+            inCommand = false;
         }
 
         private static void Reset(int what = 0)
         {
             player.Energy = 100;
             player.Shields = 100;
+
+            inCommand = false;
         }
 
         private static void Summon(string what)
@@ -254,14 +293,29 @@ namespace WWC
             switch(what)
             {
                 case "torch":
-                    item = Item.CreateTorch(50);
-                    var x = player!.X - 1 + random.Next(2);
-                    var y = player!.Y - 1 + random.Next(2);
-                    (x, y) = castle!.Clamp(x, y);
-                    room = castle!.GetRoom(x, y, player!.Z);
-                    room.Items.Add(item);
+                    {
+                        item = Item.CreateTorch(50);
+                        var x = player!.X - 1 + random.Next(2);
+                        var y = player!.Y - 1 + random.Next(2);
+                        (x, y) = castle!.Clamp(x, y);
+                        room = castle!.GetRoom(x, y, player!.Z);
+                        room.Items.Add(item);
+                    }
+                    break;
+
+                case "food":
+                    {
+                        item = Item.CreateFood(50);
+                        var x = player!.X - 1 + random.Next(2);
+                        var y = player!.Y - 1 + random.Next(2);
+                        (x, y) = castle!.Clamp(x, y);
+                        room = castle!.GetRoom(x, y, player!.Z);
+                        room.Items.Add(item);
+                    }
                     break;
             }
+
+            inCommand = false;
         }
     }
 }
