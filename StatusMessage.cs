@@ -1,6 +1,6 @@
 ﻿using TinyMessenger;
 
-namespace SFMLWWC
+namespace WWC
 {
     internal class StatusMessage : TinyMessageBase
     {

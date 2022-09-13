@@ -1,7 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 
-namespace SFMLWWC
+namespace WWC
 {
     internal class CastleDrawing
     {

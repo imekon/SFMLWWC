@@ -1,4 +1,4 @@
-﻿namespace SFMLWWC
+﻿namespace WWC
 {
     internal class Item
     {

@@ -1,7 +1,6 @@
-﻿using System.Numerics;
-using SFML.System;
+﻿using SFML.System;
 
-namespace SFMLWWC
+namespace WWC
 {
     internal class Actor
     {
