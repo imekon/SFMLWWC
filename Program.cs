@@ -242,6 +242,19 @@ namespace WWC
             var background = new Color(80, 80, 255);
             commandText = new Text("> ", font);
             commandText.Position = new Vector2f(10, 10);
+
+            try
+            {
+                if (File.Exists("setup.lua"))
+                    script.DoFile("setup.lua");
+                else
+                    hub.Publish(new StatusMessage(new object(), "Can't find setup.lua"));
+            }
+            catch(Exception ex)
+            {
+                hub.Publish(new StatusMessage(new object(), ex.Message));
+            }
+
             while(window.IsOpen)
             {
                 window.DispatchEvents();
