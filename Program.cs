@@ -249,11 +249,16 @@ namespace WWC
             Item? item = null;
             Room? room = null;
 
+            var random = new Random();
+
             switch(what)
             {
                 case "torch":
                     item = Item.CreateTorch(50);
-                    room = castle!.GetRoom(player!.X, player!.Y, player!.Z);
+                    var x = player!.X - 1 + random.Next(2);
+                    var y = player!.Y - 1 + random.Next(2);
+                    (x, y) = castle!.Clamp(x, y);
+                    room = castle!.GetRoom(x, y, player!.Z);
                     room.Items.Add(item);
                     break;
             }
