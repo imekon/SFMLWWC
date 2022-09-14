@@ -10,14 +10,17 @@ namespace WWC
         public const int DEPTH = 50;
 
         private TinyMessengerHub messengerHub;
+        private MonsterManager monsterManager;
         private string status;
         private Random random;
         private Room[,,] rooms;
         private Time elapsedTime;
         private Time statusWhen;
 
-        public Castle(TinyMessengerHub hub)
+        public Castle(TinyMessengerHub hub, MonsterManager monstreManager)
         {
+            this.monsterManager = monstreManager;
+
             messengerHub = hub;
 
             status = "Ready";
@@ -41,8 +44,8 @@ namespace WWC
             // Set the stairs down
             for (var z = 0; z < DEPTH; z++)
             {
-                var x = random.NextInt64(WIDTH);
-                var y = random.NextInt64(HEIGHT);
+                var x = random.Next(WIDTH);
+                var y = random.Next(HEIGHT);
 
                 var room = rooms[x, y, z];
                 room.Items.Add(Item.CreateStairsDown());
@@ -64,22 +67,22 @@ namespace WWC
 
                 // Food
                 room = GetEmptyRoom(z);
-                if (random.NextInt64(100) < 50)
+                if (random.Next(100) < 70 - z / 2)
                     room.Items.Add(Item.CreateFood(10));
 
                 // Torch
                 room = GetEmptyRoom(z);
-                if (random.NextInt64(100) < 50)
+                if (random.Next(100) < 70 - z / 2)
                     room.Items.Add(Item.CreateTorch(50));
 
                 // Sink room
                 room = GetEmptyRoom(z);
-                if (random.NextInt64(100) < 20 + z)
+                if (random.Next(100) < 20 + z)
                     room.Items.Add(Item.CreateSinkRoom());
 
                 // Warp room
                 room = GetEmptyRoom(z);
-                if (random.NextInt64(100) < 10 + z / 2)
+                if (random.Next(100) < 10 + z / 2)
                     room.Items.Add(Item.CreateWarpRoom());
 
                 room = GetEmptyRoom(z);
@@ -139,10 +142,21 @@ namespace WWC
                 room.Monsters.Add(monster);
             }
 
-            if (random.NextInt64(100) < 5)
+            foreach(var monsterTemplate in monsterManager.Monsters)
             {
-                var monster = new Actor(ActorType.Mouse);
-                room.Monsters.Add(monster);
+                if (monsterTemplate.Lowest > z)
+                {
+                    if (random.Next(100) < 5)
+                    {
+                        var type = monsterManager.GetActorType(monsterTemplate.Name);
+                        if (type == ActorType.Unknown)
+                            continue;
+
+                        var monster = new Actor(type);
+                        room.Monsters.Add(monster);
+                        break;
+                    }
+                }
             }
         }
 
@@ -260,7 +274,7 @@ namespace WWC
 
                     case Content.Warp:
                         room.Tripped = true;
-                        player.Z = player.Z + (int)random.NextInt64(40);
+                        player.Z = player.Z + (int)random.Next(40);
                         if (player.Z > DEPTH)
                             player.Z = DEPTH - 1;
                         player.Energy = player.Energy - 40;
@@ -293,8 +307,8 @@ namespace WWC
         {
             while(true)
             {
-                var x = random.NextInt64(WIDTH);
-                var y = random.NextInt64(HEIGHT);
+                var x = random.Next(WIDTH);
+                var y = random.Next(HEIGHT);
 
                 var room = rooms[x, y, z];
                 if (room.IsEmpty)

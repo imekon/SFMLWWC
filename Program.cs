@@ -10,6 +10,7 @@ namespace WWC
     internal class Program
     {
         private static TinyMessengerHub? hub = null;
+        private static MonsterManager? monsterManager = null;
         private static Text? commandText = null;
         private static Text? statusText = null;
         private static Actor? player = null;
@@ -41,7 +42,35 @@ namespace WWC
             player.X = (int)random.Next(Castle.WIDTH);
             player.Y = (int)random.Next(Castle.HEIGHT);
 
-            castle = new Castle(hub);
+            monsterManager = new MonsterManager();
+
+            try
+            {
+                if (File.Exists("setup.lua"))
+                {
+                    script.DoFile("setup.lua");
+
+                    var monsters = script.Globals.Get("monsters");
+
+                    foreach (var pair in monsters.Table.Pairs)
+                    {
+                        var name = pair.Value.Table.Get("name");
+                        var strength = pair.Value.Table.Get("strength");
+                        var armour = pair.Value.Table.Get("armour");
+                        var lowest = pair.Value.Table.Get("lowest");
+                        var monster = new Monster(name.String, (int)strength.Number, (int)armour.Number, (int)lowest.Number);
+                        monsterManager.Add(monster);
+                    }
+                }
+                else
+                    hub.Publish(new StatusMessage(new object(), "Can't find setup.lua"));
+            }
+            catch (Exception ex)
+            {
+                hub.Publish(new StatusMessage(new object(), ex.Message));
+            }
+
+            castle = new Castle(hub, monsterManager);
 
             var castleDrawing = new CastleDrawing(font);
 
@@ -195,8 +224,6 @@ namespace WWC
                 }
                 else
                 {
-                    Actor? monster = null;
-
                     switch (args.Code)
                     {
                         case Keyboard.Key.F5:
@@ -243,18 +270,6 @@ namespace WWC
             commandText = new Text("> ", font);
             commandText.Position = new Vector2f(10, 10);
 
-            try
-            {
-                if (File.Exists("setup.lua"))
-                    script.DoFile("setup.lua");
-                else
-                    hub.Publish(new StatusMessage(new object(), "Can't find setup.lua"));
-            }
-            catch(Exception ex)
-            {
-                hub.Publish(new StatusMessage(new object(), ex.Message));
-            }
-
             while(window.IsOpen)
             {
                 window.DispatchEvents();
@@ -276,12 +291,12 @@ namespace WWC
 
         private static void Print(string text)
         {
-            hub.Publish(new StatusMessage(new object(), text));
+            hub!.Publish(new StatusMessage(new object(), text));
         }
 
         private static void Go(int x, int y, int z)
         {
-            player.X = x;
+            player!.X = x;
             player.Y = y;
             player.Z = z;
 
@@ -290,7 +305,7 @@ namespace WWC
 
         private static void Reset(int what = 0)
         {
-            player.Energy = 100;
+            player!.Energy = 100;
             player.Shields = 100;
 
             inCommand = false;
@@ -324,6 +339,12 @@ namespace WWC
                         (x, y) = castle!.Clamp(x, y);
                         room = castle!.GetRoom(x, y, player!.Z);
                         room.Items.Add(item);
+                    }
+                    break;
+
+                default:
+                    {
+
                     }
                     break;
             }

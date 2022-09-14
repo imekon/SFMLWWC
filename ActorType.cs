@@ -2,11 +2,13 @@
 {
     internal enum ActorType
     {
+        Unknown,
         Player,
         Vendor,
         Mouse,
         Rat,
         Dog,
+        Mimic,
         Vampire,
         Worm,
         Snake,
