@@ -11,24 +11,22 @@ namespace WWC
     {
         private static TinyMessengerHub? hub = null;
         private static MonsterManager? monsterManager = null;
-        private static Text? commandText = null;
         private static Text? statusText = null;
         private static Actor? player = null;
         private static Castle? castle = null;
-        private static int cursor = 0;
         private static bool inCommand = false;
+        private static Console? console = null;
+        private static Script? script = null;
 
         static void Main(string[] args)
         {
-            var script = new Script();
+            script = new Script();
 
             script.Globals["go"] = (Action<int, int, int>)Go;
             script.Globals["reset"] = (Action<int>)Reset;
             script.Globals["summon"] = (Action<string>)Summon;
 
             script.Options.DebugPrint = s => Print(s);
-
-            var commandBuffer = new StringBuilder();
 
             var random = new Random();
 
@@ -58,7 +56,8 @@ namespace WWC
                         var strength = pair.Value.Table.Get("strength");
                         var armour = pair.Value.Table.Get("armour");
                         var lowest = pair.Value.Table.Get("lowest");
-                        var monster = new Monster(name.String, (int)strength.Number, (int)armour.Number, (int)lowest.Number);
+                        var hightest = pair.Value.Table.Get("highest");
+                        var monster = new Monster(name.String, (int)strength.Number, (int)armour.Number, (int)lowest.Number, (int)hightest.Number);
                         monsterManager.Add(monster);
                     }
                 }
@@ -76,6 +75,8 @@ namespace WWC
 
             var image = new Image("wwc.png");
 
+            console = new Console(font, 24, ConsoleExecute);
+
             var window = new RenderWindow(new VideoMode(800, 600), "Wandering Wizard's Castle");
 
             window.SetIcon(32, 32, image.Pixels);
@@ -87,140 +88,7 @@ namespace WWC
             {
                 if (inCommand)
                 {
-                    switch (args.Code)
-                    {
-                        case Keyboard.Key.F5:
-                            inCommand = !inCommand;
-                            commandBuffer.Clear();
-                            break;
-
-                        case Keyboard.Key.A:
-                        case Keyboard.Key.B:
-                        case Keyboard.Key.C:
-                        case Keyboard.Key.D:
-                        case Keyboard.Key.E:
-                        case Keyboard.Key.F:
-                        case Keyboard.Key.G:
-                        case Keyboard.Key.H:
-                        case Keyboard.Key.I:
-                        case Keyboard.Key.J:
-                        case Keyboard.Key.K:
-                        case Keyboard.Key.L:
-                        case Keyboard.Key.M:
-                        case Keyboard.Key.N:
-                        case Keyboard.Key.O:
-                        case Keyboard.Key.P:
-                        case Keyboard.Key.Q:
-                        case Keyboard.Key.R:
-                        case Keyboard.Key.S:
-                        case Keyboard.Key.T:
-                        case Keyboard.Key.U:
-                        case Keyboard.Key.V:
-                        case Keyboard.Key.W:
-                        case Keyboard.Key.X:
-                        case Keyboard.Key.Y:
-                        case Keyboard.Key.Z:
-                            commandBuffer.Append((char)(args.Code + 'a'));
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.Num0:
-                            if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) || Keyboard.IsKeyPressed(Keyboard.Key.RShift))
-                                commandBuffer.Append(")");
-                            else
-                                commandBuffer.Append("0");
-
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.Num2:
-                            if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) || Keyboard.IsKeyPressed(Keyboard.Key.RShift))
-                                commandBuffer.Append("\"");
-                            else
-                                commandBuffer.Append("2");
-
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.Num1:
-                        case Keyboard.Key.Num3:
-                        case Keyboard.Key.Num4:
-                        case Keyboard.Key.Num5:
-                        case Keyboard.Key.Num6:
-                        case Keyboard.Key.Num7:
-                        case Keyboard.Key.Num8:
-                            commandBuffer.Append((char)(args.Code + '0' - Keyboard.Key.Num0));
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.Num9:
-                            if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) || Keyboard.IsKeyPressed(Keyboard.Key.RShift))
-                                commandBuffer.Append("(");
-                            else
-                                commandBuffer.Append("9");
-
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.Quote:
-                            // NEITHER WORKS!!!
-                            if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) || Keyboard.IsKeyPressed(Keyboard.Key.RShift))
-                                commandBuffer.Append("@");
-                            else
-                                commandBuffer.Append("'");
-
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.LBracket:
-                            if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) || Keyboard.IsKeyPressed(Keyboard.Key.RShift))
-                                commandBuffer.Append("{");
-                            else
-                                commandBuffer.Append("[");
-
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.RBracket:
-                            if (Keyboard.IsKeyPressed(Keyboard.Key.LShift) || Keyboard.IsKeyPressed(Keyboard.Key.RShift))
-                                commandBuffer.Append("}");
-                            else
-                                commandBuffer.Append("]");
-
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.Space:
-                            commandBuffer.Append(" ");
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.Comma:
-                            commandBuffer.Append(",");
-                            cursor++;
-                            break;
-
-                        case Keyboard.Key.Backspace:
-                            commandBuffer.Remove(commandBuffer.Length - 1, 1);
-                            cursor--;
-                            break;
-
-                        case Keyboard.Key.Enter:
-                            try
-                            {
-                                script.DoString(commandBuffer.ToString());
-                            }
-                            catch(Exception ex)
-                            {
-                                hub.Publish(new StatusMessage(new object(), ex.Message));
-                            }
-                            commandBuffer.Clear();
-                            cursor = 0;
-                            break;
-                    }
-
-                    commandText = new Text("> " + commandBuffer.ToString(), font);
-                    commandText.Position = new Vector2f(10, 10);
+                    inCommand = console.KeyPressed(args.Code);
                 }
                 else
                 {
@@ -228,7 +96,6 @@ namespace WWC
                     {
                         case Keyboard.Key.F5:
                             inCommand = !inCommand;
-                            commandBuffer.Clear();
                             break;
 
                         case Keyboard.Key.Left:
@@ -267,8 +134,6 @@ namespace WWC
             };
 
             var background = new Color(80, 80, 255);
-            commandText = new Text("> ", font);
-            commandText.Position = new Vector2f(10, 10);
 
             while(window.IsOpen)
             {
@@ -277,7 +142,7 @@ namespace WWC
                 window.Clear(background);
                 if (inCommand)
                 {
-                    window.Draw(commandText);
+                    console.Draw(window);
                     statusText = new Text(castle.Status, font);
                     statusText.Position = new Vector2f(10, 500);
                     window.Draw(statusText);
@@ -344,12 +209,31 @@ namespace WWC
 
                 default:
                     {
-
+                        var type = monsterManager!.GetActorType(what);
+                        var monster = new Actor(type);
+                        var x = player!.X - 1 + random.Next(2);
+                        var y = player!.Y - 1 + random.Next(2);
+                        (x, y) = castle!.Clamp(x, y);
+                        room = castle!.GetRoom(x, y, player!.Z);
+                        room.Monsters.Add(monster);
                     }
                     break;
             }
 
             inCommand = false;
+        }
+
+        private static void ConsoleExecute(string command)
+        {
+            try
+            {
+                script!.DoString(command);
+                inCommand = false;
+            }
+            catch(Exception ex)
+            {
+                hub!.Publish(new StatusMessage(script!, ex.Message));
+            }
         }
     }
 }

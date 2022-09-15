@@ -144,7 +144,7 @@ namespace WWC
 
             foreach(var monsterTemplate in monsterManager.Monsters)
             {
-                if (monsterTemplate.Lowest > z)
+                if (monsterTemplate.Lowest >= z && monsterTemplate.Highest <= z)
                 {
                     if (random.Next(100) < 5)
                     {
