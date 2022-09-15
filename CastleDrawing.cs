@@ -72,7 +72,7 @@ namespace WWC
 
                 case Content.Sink:
                     if (tripped)
-                        return "S";
+                        return " ";
                     else
                         return ".";
 
@@ -127,10 +127,6 @@ namespace WWC
             text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
             text.FillColor = Color.White;
-
-            text = new Text($"Shields: {player.Shields}", font);
-            text.Position = new Vector2f(10, 300 + line * 30); line++;
-            window.Draw(text);
 
             text = new Text($"Gold:    {player.Gold}", font);
             text.Position = new Vector2f(10, 300 + line * 30); line++;

@@ -171,7 +171,6 @@ namespace WWC
         private static void Reset(int what = 0)
         {
             player!.Energy = 100;
-            player.Shields = 100;
 
             inCommand = false;
         }

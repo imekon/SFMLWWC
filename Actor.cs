@@ -12,7 +12,9 @@ namespace WWC
         private int energy;
         private int minEnergy;
         private int maxEnergy;
-        private int shields;
+        private int strength;
+        private int dexterity;
+        private int iq;
         private int gold;
         private int lighting;
         private List<Item> items;
@@ -29,7 +31,9 @@ namespace WWC
             energy = 100;
             minEnergy = 10;
             maxEnergy = 100;
-            shields = 100;
+            strength = 6;
+            dexterity = 6;
+            iq = 6;
             gold = 50;
             lighting = 0;
             items = new List<Item>();
@@ -43,7 +47,9 @@ namespace WWC
         public int Z { get { return z; } set { z = value; } }
         public int Energy { get { return energy; } set { energy = value; } }
         public int MinEnergy => minEnergy;
-        public int Shields { get { return shields; } set { shields = value; } }
+        public int Strength { get => strength; set { strength = value; } }
+        public int Dexterity { get => dexterity; set { dexterity = value; } }
+        public int IQ { get => iq; set { iq = value; }  }
         public int Gold { get => gold; set { gold = value; } }
         public int Lighting => lighting;
 
