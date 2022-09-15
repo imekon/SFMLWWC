@@ -54,10 +54,12 @@ namespace WWC
                     {
                         var name = pair.Value.Table.Get("name");
                         var strength = pair.Value.Table.Get("strength");
+                        var dexterity = pair.Value.Table.Get("dexterity");
+                        var iq = pair.Value.Table.Get("iq");
                         var armour = pair.Value.Table.Get("armour");
                         var lowest = pair.Value.Table.Get("lowest");
                         var hightest = pair.Value.Table.Get("highest");
-                        var monster = new Monster(name.String, (int)strength.Number, (int)armour.Number, (int)lowest.Number, (int)hightest.Number);
+                        var monster = new Monster(name.String, (int)strength.Number, (int)dexterity.Number, (int)iq.Number, (int)armour.Number, (int)lowest.Number, (int)hightest.Number);
                         monsterManager.Add(monster);
                     }
                 }
