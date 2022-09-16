@@ -191,11 +191,6 @@ namespace WWC
                     player.Z = player.Z + 1;
                     player.Energy = player.Energy - 2;
                     break;
-
-                case Content.Food:
-                    player.Energy = player.Energy + 10;
-                    room.Items.Remove(item);
-                    break;
             }
         }
 
@@ -277,6 +272,7 @@ namespace WWC
             {
                 switch (item.Contents)
                 {
+                    case Content.Food:
                     case Content.Gold:
                     case Content.Torch:
                     case Content.Dagger:
@@ -344,6 +340,11 @@ namespace WWC
             {
                 switch(item.Contents)
                 {
+                    case Content.Food:
+                        actor.Energy += (int)item.Value;
+                        messengerHub.Publish(new StatusMessage(this, "Player picked up some food and ate it"));
+                        break;
+
                     case Content.Gold:
                         actor.Gold = actor.Gold + (int)item.Value;
                         messengerHub.Publish(new StatusMessage(this, $"Player picked up {item.Value} gold pieces"));

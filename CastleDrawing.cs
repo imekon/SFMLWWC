@@ -94,6 +94,7 @@ namespace WWC
         public void Draw(RenderWindow window, Font font, Castle castle, Actor player)
         {
             Text text;
+            text = new Text(".", font);
 
             for(var y = 0; y < Castle.HEIGHT; y++)
             {
@@ -103,7 +104,7 @@ namespace WWC
                     var visible = castle.GetVisible(x, y, player.Z);
                     var tripped = castle.GetTripped(x, y, player.Z);
                     var monster = castle.GetRoomMonster(x, y, player.Z);
-                    text = new Text(ConvertContents(contents, monster, visible, tripped), font);
+                    text.DisplayedString = ConvertContents(contents, monster, visible, tripped);
                     text.Position = new Vector2f(x * HORZ_SPACING + LEFT_MARGIN, y * VERT_SPACING + TOP_MARGIN);
 
                     window.Draw(text);
@@ -124,7 +125,7 @@ namespace WWC
             text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
 
-            text = new Text($"Energy:  {player.Energy}", font);
+            text.DisplayedString = $"Energy:  {player.Energy}";
             if (player.Energy < player.MinEnergy)
                 text.FillColor = Color.Red;
 
@@ -132,15 +133,15 @@ namespace WWC
             window.Draw(text);
             text.FillColor = Color.White;
 
-            text = new Text($"Gold:    {player.Gold}", font);
+            text.DisplayedString =$"Gold:    {player.Gold}";
             text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
 
-            text = new Text($"Torches: {player.TorchCount} ({player.Lighting})", font);
+            text.DisplayedString = $"Torches: {player.TorchCount} ({player.Lighting})";
             text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
 
-            text = new Text(castle.Status, font);
+            text.DisplayedString = castle.Status;
             text.Position = new Vector2f(10, 550);
             window.Draw(text);
         }

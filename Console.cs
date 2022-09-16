@@ -193,7 +193,7 @@ namespace WWC
                     unhistory.Clear();
                     buffer.Clear();
                     cursor = 0;
-                    break;
+                    return false;
 
                 case Keyboard.Key.Up:
                     if (history.Any())
