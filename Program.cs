@@ -14,7 +14,7 @@ namespace WWC
         private static Text? statusText = null;
         private static Actor? player = null;
         private static Castle? castle = null;
-        private static bool inCommand = false;
+        private static CommandState state = CommandState.Playing;
         private static Console? console = null;
         private static Script? script = null;
 
@@ -88,50 +88,60 @@ namespace WWC
             window.SetKeyRepeatEnabled(false);
             window.KeyPressed += (sender, args) => 
             {
-                if (inCommand)
+                switch (state)
                 {
-                    inCommand = console.KeyPressed(args.Code);
-                }
-                else
-                {
-                    switch (args.Code)
-                    {
-                        case Keyboard.Key.F5:
-                            inCommand = !inCommand;
-                            break;
+                    case CommandState.Command:
+                        if (!console.KeyPressed(args.Code))
+                            state = CommandState.Playing;
+                        break;
 
-                        case Keyboard.Key.Left:
-                        case Keyboard.Key.A:
-                            castle.MoveOrAttack(player, -1, 0);
-                            break;
+                    case CommandState.Inventory:
+                        break;
 
-                        case Keyboard.Key.Right:
-                        case Keyboard.Key.D:
-                            castle.MoveOrAttack(player, 1, 0);
-                            break;
+                    case CommandState.Playing:
+                        switch (args.Code)
+                        {
+                            case Keyboard.Key.F5:
+                                state = CommandState.Command;
+                                break;
 
-                        case Keyboard.Key.Up:
-                        case Keyboard.Key.W:
-                            castle.MoveOrAttack(player, 0, -1);
-                            break;
+                            case Keyboard.Key.I:
+                                state = CommandState.Inventory;
+                                break;
 
-                        case Keyboard.Key.Down:
-                        case Keyboard.Key.S:
-                            castle.MoveOrAttack(player, 0, 1);
-                            break;
+                            case Keyboard.Key.Left:
+                            case Keyboard.Key.A:
+                                castle.MoveOrAttack(player, -1, 0);
+                                break;
 
-                        case Keyboard.Key.F:
-                            castle.Execute(player);
-                            break;
+                            case Keyboard.Key.Right:
+                            case Keyboard.Key.D:
+                                castle.MoveOrAttack(player, 1, 0);
+                                break;
 
-                        case Keyboard.Key.L:
-                            player.Light();
-                            break;
+                            case Keyboard.Key.Up:
+                            case Keyboard.Key.W:
+                                castle.MoveOrAttack(player, 0, -1);
+                                break;
 
-                        case Keyboard.Key.Escape:
-                            window.Close();
-                            break;
-                    }
+                            case Keyboard.Key.Down:
+                            case Keyboard.Key.S:
+                                castle.MoveOrAttack(player, 0, 1);
+                                break;
+
+                            case Keyboard.Key.F:
+                                castle.Execute(player);
+                                break;
+
+                            case Keyboard.Key.L:
+                                player.Light();
+                                break;
+
+                            case Keyboard.Key.Escape:
+                                window.Close();
+                                break;
+                        }
+                        break;
                 }
             };
 
@@ -142,15 +152,20 @@ namespace WWC
                 window.DispatchEvents();
                 castle.Update(clock.ElapsedTime, player);
                 window.Clear(background);
-                if (inCommand)
+                
+                switch (state)
                 {
-                    console.Draw(window);
-                    statusText = new Text(castle.Status, font);
-                    statusText.Position = new Vector2f(10, 500);
-                    window.Draw(statusText);
+                    case CommandState.Command:
+                        console.Draw(window);
+                        statusText = new Text(castle.Status, font);
+                        statusText.Position = new Vector2f(10, 500);
+                        window.Draw(statusText);
+                        break;
+
+                    case CommandState.Playing:
+                        castleDrawing.Draw(window, font, castle, player);
+                        break;
                 }
-                else
-                    castleDrawing.Draw(window, font, castle, player);
 
                 window.Display();
             }
@@ -167,14 +182,14 @@ namespace WWC
             player.Y = y;
             player.Z = z;
 
-            inCommand = false;
+            state = CommandState.Playing;
         }
 
         private static void Reset(int what = 0)
         {
             player!.Energy = 100;
 
-            inCommand = false;
+            state = CommandState.Playing;
         }
 
         private static void Summon(string what)
@@ -221,7 +236,7 @@ namespace WWC
                     break;
             }
 
-            inCommand = false;
+            state = CommandState.Playing;
         }
 
         private static void ConsoleExecute(string command)
@@ -229,9 +244,9 @@ namespace WWC
             try
             {
                 script!.DoString(command);
-                inCommand = false;
+                state = CommandState.Playing;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 hub!.Publish(new StatusMessage(script!, ex.Message));
             }
