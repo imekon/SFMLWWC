@@ -14,6 +14,7 @@ namespace WWC
         private string status;
         private Random random;
         private Room[,,] rooms;
+        private List<Actor> monsters;
         private Time elapsedTime;
         private Time statusWhen;
 
@@ -30,6 +31,7 @@ namespace WWC
 
             random = new Random();
 
+            monsters = new List<Actor>();
             rooms = new Room[WIDTH, HEIGHT, DEPTH];
 
             // Empty all the rooms
@@ -68,7 +70,7 @@ namespace WWC
                 // Food
                 room = GetEmptyRoom(z);
                 if (random.Next(100) < 70 - z / 2)
-                    room.Items.Add(Item.CreateFood(10));
+                    room.Items.Add(Item.CreateFood(30));
 
                 // Torch
                 room = GetEmptyRoom(z);
@@ -139,6 +141,7 @@ namespace WWC
             if (z == DEPTH - 1)
             {
                 var monster = new Actor(ActorType.WanderingWizard);
+                monsters.Add(monster);
                 room.Monsters.Add(monster);
             }
 
@@ -146,7 +149,7 @@ namespace WWC
             {
                 if (monsterTemplate.Lowest >= z && monsterTemplate.Highest <= z)
                 {
-                    if (random.Next(100) < 5)
+                    if (random.Next(100) < 30)
                     {
                         var type = monsterManager.GetActorType(monsterTemplate.Name);
                         if (type == ActorType.Unknown)
@@ -219,9 +222,14 @@ namespace WWC
                 return true;
             }
 
+            if (monster.Dead)
+            {
+                player.Move(dx, dy);
+                return true;
+            }
+
             monster.Awake = true;
-            monster.Energy = monster.Energy - 5;
-            player.Energy = player.Energy - 5;
+            Arena.Battle(player, monster);
 
             return false;
         }
@@ -231,6 +239,12 @@ namespace WWC
             elapsedTime = elapsed;
 
             player.Update(elapsedTime);
+
+            foreach(var monster in monsters)
+            {
+                if (monster.Dead)
+                    monster.Energy = 0;
+            }
 
             var statusDur = elapsedTime - statusWhen;
             if (statusDur.AsSeconds() > 3)

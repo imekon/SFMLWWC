@@ -6,6 +6,7 @@ namespace WWC
     {
         private ActorType type;
         private bool awake;
+        private bool dead;
         private int x;
         private int y;
         private int z;
@@ -25,6 +26,7 @@ namespace WWC
         {
             this.type = type;
             awake = false;
+            dead = false;
             x = 0;
             y = 0;
             z = 0;
@@ -42,6 +44,7 @@ namespace WWC
 
         public ActorType ActorType => type;
         public bool Awake { get => awake; set { awake = value; } }
+        public bool Dead { get => dead; set { dead = value; } }
         public int X { get { return x; } set { x = value; } }
         public int Y { get { return y; } set { y = value; } }
         public int Z { get { return z; } set { z = value; } }

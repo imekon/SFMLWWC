@@ -10,7 +10,8 @@
         private int lowest;
         private int highest;
 
-        public Monster(string name, int strength, int dexterity, int iq, int armour, int lowest, int highest)        {
+        public Monster(string name, int strength, int dexterity, int iq, int armour, int lowest, int highest)
+        {
             this.name = name;
             this.strength = strength;
             this.dexterity = dexterity;
