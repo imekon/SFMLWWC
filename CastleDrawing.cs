@@ -82,6 +82,10 @@ namespace WWC
                     else
                         return ".";
 
+                case Content.Dagger:
+                case Content.Sword:
+                    return "w";
+
                 default:
                     return "X";
             }

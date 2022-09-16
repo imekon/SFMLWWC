@@ -88,6 +88,14 @@ namespace WWC
                     room.Items.Add(Item.CreateWarpRoom());
 
                 room = GetEmptyRoom(z);
+                if (random.Next(100) < 40)
+                    room.Items.Add(Item.CreateDagger(4));
+
+                room = GetEmptyRoom(z);
+                if (random.Next(100) < 30)
+                    room.Items.Add(Item.CreateSword(4));
+
+                room = GetEmptyRoom(z);
                 CreateMonster(room, z);
             }
 
@@ -270,11 +278,9 @@ namespace WWC
                 switch (item.Contents)
                 {
                     case Content.Gold:
-                        PickupItem(room, player);
-                        list.Add(item);
-                        break;
-
                     case Content.Torch:
+                    case Content.Dagger:
+                    case Content.Sword:
                         PickupItem(room, player);
                         list.Add(item);
                         break;
@@ -346,6 +352,12 @@ namespace WWC
                     case Content.Torch:
                         actor.Items.Add(item);
                         messengerHub.Publish(new StatusMessage(this, "Player picked up a torch"));
+                        break;
+
+                    case Content.Dagger:
+                    case Content.Sword:
+                        actor.Items.Add(item);
+                        messengerHub.Publish(new StatusMessage(this, "Player picked up a weapon"));
                         break;
                 }
             }

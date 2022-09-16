@@ -82,5 +82,19 @@
             var item = new Item(Content.Warp);
             return item;
         }
+
+        public static Item CreateDagger(int value)
+        {
+            var item = new Item(Content.Dagger);
+            item.properties.Add(new Property<int>(PropertyType.IntValue, value));
+            return item;
+        }
+
+        public static Item CreateSword(int value)
+        {
+            var item = new Item(Content.Sword);
+            item.properties.Add(new Property<int>(PropertyType.IntValue, value));
+            return item;
+        }
     }
 }
