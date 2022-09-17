@@ -74,6 +74,7 @@ namespace WWC
             castle = new Castle(hub, monsterManager);
 
             var castleDrawing = new CastleDrawing(font);
+            var inventoryDrawing = new InventoryDrawing(font);
 
             var image = new Image("wwc.png");
 
@@ -96,6 +97,8 @@ namespace WWC
                         break;
 
                     case CommandState.Inventory:
+                        if (!inventoryDrawing.KeyPressed(args.Code))
+                            state = CommandState.Playing;
                         break;
 
                     case CommandState.Playing:
@@ -162,8 +165,12 @@ namespace WWC
                         window.Draw(statusText);
                         break;
 
+                    case CommandState.Inventory:
+                        inventoryDrawing.Draw(window, castle, player);
+                        break;
+
                     case CommandState.Playing:
-                        castleDrawing.Draw(window, font, castle, player);
+                        castleDrawing.Draw(window, castle, player);
                         break;
                 }
 

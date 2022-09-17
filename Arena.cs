@@ -19,9 +19,10 @@
             var attack = random.Next(36);
             var damage = random.Next(damageLimit);
             var fumble = (attack <= 4);
+            var critical = (attack >= 34);
             var hit = attack < actor1.Strength;
             if (hit)
-                actor2.Energy -= damage * 5;
+                actor2.Energy -= critical ? damage * 10 : damage * 5;
             if (fumble)
                 actor1.Energy -= 5;
         }

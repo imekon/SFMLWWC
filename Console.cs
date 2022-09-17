@@ -217,7 +217,7 @@ namespace WWC
                     }
                     break;
 
-                case Keyboard.Key.F5:
+                case Keyboard.Key.Escape:
                     return false;
             }
 

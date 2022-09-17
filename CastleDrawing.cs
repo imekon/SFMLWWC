@@ -14,12 +14,14 @@ namespace WWC
         private Text cursor1;
         private Text cursor2;
         private Text playerText;
+        private Text text;
 
         public CastleDrawing(Font font)
         {
             cursor1 = new Text("<", font);
             cursor2 = new Text(">", font);
             playerText = new Text("@", font);
+            text = new Text("?", font);
         }
 
         private static string ConvertContents(Content contents, Actor? monster, bool visible, bool tripped)
@@ -91,11 +93,8 @@ namespace WWC
             }
         }
 
-        public void Draw(RenderWindow window, Font font, Castle castle, Actor player)
+        public void Draw(RenderWindow window, Castle castle, Actor player)
         {
-            Text text;
-            text = new Text(".", font);
-
             for(var y = 0; y < Castle.HEIGHT; y++)
             {
                 for (var x = 0; x < Castle.WIDTH; x++)
@@ -121,7 +120,7 @@ namespace WWC
             window.Draw(cursor2);
 
             int line = 0;
-            text = new Text($"Level:   {player.Z + 1}", font);
+            text.DisplayedString = $"Level:   {player.Z + 1}";
             text.Position = new Vector2f(10, 300 + line * 30); line++;
             window.Draw(text);
 

@@ -1,4 +1,5 @@
 ﻿using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 
 namespace WWC
@@ -14,14 +15,56 @@ namespace WWC
             text = new Text("Inventory", font);
         }
 
-        public void KeyPressed(Keyboard.Key key)
+        public bool KeyPressed(Keyboard.Key key)
         {
+            switch(key)
+            {
+                case Keyboard.Key.Escape:
+                    return false;
+            }
 
+            return true;
         }
 
-        public void Draw(RenderWindow window)
+        public void Draw(RenderWindow window, Castle castle, Actor player)
         {
+            var line = 0;
+
+            text.DisplayedString = "Inventory";
+            text.Position = new Vector2f(10, 10 + line * 26);
+            line += 2;
             window.Draw(text);
+
+            foreach(var item in player.Items)
+            {
+                switch(item.Contents)
+                {
+                    case Content.Boots:
+                        text.DisplayedString = "Boots";
+                        text.Position = new Vector2f(10, 10 + line * 26); line++;
+                        window.Draw(text);
+                        break;
+
+                    case Content.Dagger:
+                        text.DisplayedString = "Dagger";
+                        text.Position = new Vector2f(10, 10 + line * 26); line++;
+                        window.Draw(text);
+                        break;
+
+                    case Content.Sword:
+                        text.DisplayedString = "Sword";
+                        text.Position = new Vector2f(10, 10 + line * 26); line++;
+                        window.Draw(text);
+                        break;
+
+                    case Content.Axe:
+                        text.DisplayedString = "Axe";
+                        text.Position = new Vector2f(10, 10 + line * 26); line++;
+                        window.Draw(text);
+                        break;
+
+                }
+            }
         }
     }
 }
