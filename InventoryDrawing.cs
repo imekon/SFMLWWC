@@ -29,6 +29,7 @@ namespace WWC
         public void Draw(RenderWindow window, Castle castle, Actor player)
         {
             var line = 0;
+            var count = 0;
 
             text.DisplayedString = "Inventory";
             text.Position = new Vector2f(10, 10 + line * 26);
@@ -64,6 +65,11 @@ namespace WWC
                         break;
 
                 }
+
+                count++;
+
+                if (count >= 10)
+                    break;
             }
         }
     }

@@ -159,6 +159,10 @@ namespace WWC
             while(window.IsOpen)
             {
                 window.DispatchEvents();
+
+                if (player.Dead)
+                    DisplayMessage("Do you wish to become a zombie?", font);
+
                 castle.Update(clock.ElapsedTime, player);
                 window.Clear(background);
                 
