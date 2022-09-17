@@ -19,6 +19,8 @@ namespace WWC
         private int gold;
         private int lighting;
         private List<Item> items;
+        private Item? weapon;
+        private Item? armour;
 
         private Time energyWhen;
 
@@ -40,6 +42,8 @@ namespace WWC
             lighting = 0;
             items = new List<Item>();
             energyWhen = new Time();
+            weapon = null;
+            armour = null;
         }
 
         public ActorType ActorType => type;
@@ -72,6 +76,10 @@ namespace WWC
             }
         }
 
+        public List<Item> Items => items;
+        public Item? Weapon { get => weapon; set { weapon = value; } }
+        public Item? Armour { get => armour; set { armour = value; } }
+
         private Item? FindLight()
         {
             foreach(var item in items)
@@ -82,8 +90,6 @@ namespace WWC
 
             return null;
         }
-
-        public List<Item> Items => items;
 
         public void Move(int dx, int dy)
         {

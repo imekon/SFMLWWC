@@ -1,6 +1,4 @@
 ﻿function setup()
-	print("Setting up WWC")
-
 	vendor = {
 		name = "vendor",
 		strength = 22,
@@ -71,6 +69,16 @@
 		highest = 20
 	}
 
+	dagger = {
+		name = "dagger",
+		damage = 4
+	}
+
+	sword = {
+		name = "sword",
+		damage = 6
+	}
+
 	monsters = {
 		vendor,
 		mouse,
@@ -81,9 +89,10 @@
 		wizard
 	}
 
-	return monsters
+	weapons = {
+		dagger,
+		sword
+	}
 end
 
-
-monsters = setup()
 

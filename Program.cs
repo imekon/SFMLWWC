@@ -17,6 +17,7 @@ namespace WWC
         private static CommandState state = CommandState.Playing;
         private static Console? console = null;
         private static Script? script = null;
+        private static MessageDrawing? messageDrawing = null;
 
         static void Main(string[] args)
         {
@@ -101,6 +102,11 @@ namespace WWC
                             state = CommandState.Playing;
                         break;
 
+                    case CommandState.DisplayMessage:
+                        if (messageDrawing != null)
+                            messageDrawing.KeyPressed(args.Code);
+                        break;
+
                     case CommandState.Playing:
                         switch (args.Code)
                         {
@@ -172,10 +178,21 @@ namespace WWC
                     case CommandState.Playing:
                         castleDrawing.Draw(window, castle, player);
                         break;
+
+                    case CommandState.DisplayMessage:
+                        if (messageDrawing != null)
+                            messageDrawing.Draw(window);
+                        break;
                 }
 
                 window.Display();
             }
+        }
+
+        private static void DisplayMessage(string message, Font font)
+        {
+            messageDrawing = new MessageDrawing(message, font);
+            state = CommandState.DisplayMessage;
         }
 
         private static void Print(string text)
