@@ -83,17 +83,25 @@
             return item;
         }
 
-        public static Item CreateDagger(int value)
+        public static Item? CreateDagger(WeaponManager weaponManager)
         {
+            var dagger = weaponManager.FindWeapon("dagger");
+            if (dagger == null)
+                return null;
+
             var item = new Item(Content.Dagger);
-            item.properties.Add(new Property<int>(PropertyType.IntValue, value));
+            item.properties.Add(new Property<int>(PropertyType.IntValue, dagger.Damage));
             return item;
         }
 
-        public static Item CreateSword(int value)
+        public static Item? CreateSword(WeaponManager weaponManager)
         {
+            var sword = weaponManager.FindWeapon("sword");
+            if (sword == null)
+                return null;
+
             var item = new Item(Content.Sword);
-            item.properties.Add(new Property<int>(PropertyType.IntValue, value));
+            item.properties.Add(new Property<int>(PropertyType.IntValue, sword.Damage));
             return item;
         }
     }

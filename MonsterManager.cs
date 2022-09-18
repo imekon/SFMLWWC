@@ -11,7 +11,7 @@
 
         public List<Monster> Monsters => monsters.Values.ToList();
 
-        public void Add(Monster monster)
+        public void AddMonster(Monster monster)
         {
             monsters.Add(monster.Name, monster);
         }

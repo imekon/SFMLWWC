@@ -11,6 +11,7 @@ namespace WWC
 
         private TinyMessengerHub messengerHub;
         private MonsterManager monsterManager;
+        private WeaponManager weaponManager;
         private string status;
         private Random random;
         private Room[,,] rooms;
@@ -18,9 +19,10 @@ namespace WWC
         private Time elapsedTime;
         private Time statusWhen;
 
-        public Castle(TinyMessengerHub hub, MonsterManager monstreManager)
+        public Castle(TinyMessengerHub hub, MonsterManager monstreManager, WeaponManager weaponManager)
         {
             this.monsterManager = monstreManager;
+            this.weaponManager = weaponManager;
 
             messengerHub = hub;
 
@@ -89,11 +91,19 @@ namespace WWC
 
                 room = GetEmptyRoom(z);
                 if (random.Next(100) < 40)
-                    room.Items.Add(Item.CreateDagger(4));
+                {
+                    var item = Item.CreateDagger(weaponManager);
+                    if (item != null)
+                        room.Items.Add(item);
+                }
 
                 room = GetEmptyRoom(z);
                 if (random.Next(100) < 30)
-                    room.Items.Add(Item.CreateSword(4));
+                {
+                    var item = Item.CreateSword(weaponManager);
+                    if (item != null)
+                        room.Items.Add(item);
+                }
 
                 room = GetEmptyRoom(z);
                 CreateMonster(room, z);

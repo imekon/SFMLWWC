@@ -1,5 +1,8 @@
 ﻿namespace WWC
 {
+    /// <summary>
+    /// Monster template
+    /// </summary>
     internal class Monster
     {
         private string name;

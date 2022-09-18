@@ -11,6 +11,7 @@ namespace WWC
     {
         private static TinyMessengerHub? hub = null;
         private static MonsterManager? monsterManager = null;
+        private static WeaponManager? weaponManager = null;
         private static Text? statusText = null;
         private static Actor? player = null;
         private static Castle? castle = null;
@@ -42,6 +43,7 @@ namespace WWC
             player.Y = (int)random.Next(Castle.HEIGHT);
 
             monsterManager = new MonsterManager();
+            weaponManager = new WeaponManager();
 
             try
             {
@@ -61,7 +63,17 @@ namespace WWC
                         var lowest = pair.Value.Table.Get("lowest");
                         var hightest = pair.Value.Table.Get("highest");
                         var monster = new Monster(name.String, (int)strength.Number, (int)dexterity.Number, (int)iq.Number, (int)armour.Number, (int)lowest.Number, (int)hightest.Number);
-                        monsterManager.Add(monster);
+                        monsterManager.AddMonster(monster);
+                    }
+
+                    var weapons = script.Globals.Get("weapons");
+
+                    foreach(var pair in weapons.Table.Pairs)
+                    {
+                        var name = pair.Value.Table.Get("name");
+                        var damage = pair.Value.Table.Get("damage");
+                        var weapon = new Weapon(name.String, (int)damage.Number);
+                        weaponManager.AddWeapon(weapon);
                     }
                 }
                 else
@@ -72,7 +84,7 @@ namespace WWC
                 hub.Publish(new StatusMessage(new object(), ex.Message));
             }
 
-            castle = new Castle(hub, monsterManager);
+            castle = new Castle(hub, monsterManager, weaponManager);
 
             var castleDrawing = new CastleDrawing(font);
             var inventoryDrawing = new InventoryDrawing(font);

@@ -45,7 +45,7 @@
 		dexterity = 16,
 		iq = 18,
 		armour = 12,
-		lowest = 30
+		lowest = 30,
 		highest = 20
 	}
 
@@ -93,6 +93,9 @@
 		dagger,
 		sword
 	}
+
+	return monsters, weapons
 end
 
+monsters, weapons = setup()
 

@@ -47,13 +47,13 @@ namespace WWC
                         break;
 
                     case Content.Dagger:
-                        text.DisplayedString = "Dagger";
+                        text.DisplayedString = $"Dagger - {item.Value} damage";
                         text.Position = new Vector2f(10, 10 + line * 26); line++;
                         window.Draw(text);
                         break;
 
                     case Content.Sword:
-                        text.DisplayedString = "Sword";
+                        text.DisplayedString = $"Sword - {item.Value} damage";
                         text.Position = new Vector2f(10, 10 + line * 26); line++;
                         window.Draw(text);
                         break;
