@@ -66,7 +66,7 @@ namespace WWC
 
                     case Content.Scroll:
                         text.DisplayedString = "Scroll";
-                        line++;
+                        text.Position = new Vector2f(10, 10 + line * 26); line++;
                         window.Draw(text);
                         break;
                 }

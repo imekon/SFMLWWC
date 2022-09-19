@@ -316,6 +316,10 @@ namespace WWC
                 script!.DoString(command);
                 castle!.State = CommandState.Playing;
             }
+            catch(SyntaxErrorException ex)
+            {
+                hub!.Publish(new StatusMessage(script!, "Error: " + ex.DecoratedMessage));
+            }
             catch (Exception ex)
             {
                 hub!.Publish(new StatusMessage(script!, ex.Message));

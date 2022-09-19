@@ -19,6 +19,18 @@ namespace WWC
         {
             switch(key)
             {
+                case Keyboard.Key.B:
+                    // TODO buy
+                    break;
+
+                case Keyboard.Key.S:
+                    // TODO sell
+                    break;
+
+                case Keyboard.Key.A:
+                    // TODO set vendor to hostile
+                    return false;
+
                 case Keyboard.Key.Escape:
                     return false;
             }
@@ -36,9 +48,13 @@ namespace WWC
             foreach(var item in vendor.Items)
             {
                 text.DisplayedString = Item.GetItemName(item.Contents);
-                text.Position = new Vector2f(10, 30 + line * 20);
+                text.Position = new Vector2f(10, 40 + line * 26); line++;
                 window.Draw(text);
             }
+
+            text.DisplayedString = "(B)uy (S)ell (A)ttack";
+            text.Position = new Vector2f(10, 500);
+            window.Draw(text);
         }
     }
 }
