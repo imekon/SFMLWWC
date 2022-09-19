@@ -181,6 +181,26 @@ namespace WWC
             }
         }
 
+        private void ExecuteOnAllRooms(int z, Action<Room> execute)
+        {
+            for(var y = 0; y < HEIGHT; y++)
+                for(var x = 0; x < WIDTH; x++)
+                {
+                    var room = GetRoom(x, y, z);
+                    execute(room);
+                }
+        }
+
+        public void Light(int z)
+        {
+            ExecuteOnAllRooms(z, room => room.Visited = true);
+        }
+
+        public void Dark(int z)
+        {
+            ExecuteOnAllRooms(z, room => room.Visited = false);
+        }
+
         public void Execute(Actor player)
         {
             var room = GetRoom(player);

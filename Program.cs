@@ -27,6 +27,8 @@ namespace WWC
             script.Globals["go"] = (Action<int, int, int>)Go;
             script.Globals["reset"] = (Action<int>)Reset;
             script.Globals["summon"] = (Action<string>)Summon;
+            script.Globals["light"] = Light;
+            script.Globals["dark"] = Dark;
 
             script.Options.DebugPrint = s => Print(s);
 
@@ -72,7 +74,9 @@ namespace WWC
                     {
                         var name = pair.Value.Table.Get("name");
                         var damage = pair.Value.Table.Get("damage");
-                        var weapon = new WeaponTemplate(name.String, (int)damage.Number);
+                        var magical = pair.Value.Table.Get("magical");
+                        var weild = pair.Value.Table.Get("weild");
+                        var weapon = new WeaponTemplate(name.String, (int)damage.Number, magical.Boolean, weild.Boolean);
                         weaponManager.AddWeapon(weapon);
                     }
                 }
@@ -277,6 +281,16 @@ namespace WWC
             }
 
             state = CommandState.Playing;
+        }
+
+        private static void Light()
+        {
+            castle!.Light(player!.Z);
+        }
+
+        private static void Dark()
+        {
+            castle!.Dark(player!.Z);
         }
 
         private static void ConsoleExecute(string command)

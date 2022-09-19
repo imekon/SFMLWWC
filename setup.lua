@@ -65,18 +65,22 @@
 		dexteity = 16,
 		iq = 22,
 		armour = 12,
-		lowest = 60,
+		lowest = 50,
 		highest = 20
 	}
 
 	dagger = {
 		name = "dagger",
-		damage = 4
+		damage = 4,
+		magical = false,
+		weild = true
 	}
 
 	sword = {
 		name = "sword",
-		damage = 6
+		damage = 6,
+		magical = false,
+		weild = true
 	}
 
 	monsters = {
