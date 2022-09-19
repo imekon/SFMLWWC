@@ -64,6 +64,11 @@ namespace WWC
                         window.Draw(text);
                         break;
 
+                    case Content.Scroll:
+                        text.DisplayedString = "Scroll";
+                        line++;
+                        window.Draw(text);
+                        break;
                 }
 
                 count++;

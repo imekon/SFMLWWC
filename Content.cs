@@ -21,6 +21,8 @@
         ChestArmour,
         Fez,
         Helmet,
+        Scroll,
+        Book,
         Fountain,
         Altar,
         Shrine

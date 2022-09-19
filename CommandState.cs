@@ -5,6 +5,7 @@
         Playing,
         Inventory,
         Command,
+        Vendor,
         DisplayMessage
     }
 }

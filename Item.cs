@@ -25,6 +25,18 @@
             }
         }
 
+        public string ValueAsString
+        {
+            get
+            {
+                var property = FindType(PropertyType.StringValue);
+                if (property != null)
+                    return ((Property<string>)property).Value;
+
+                return "";
+            }
+        }
+
         private Property? FindType(PropertyType type)
         {
             foreach (var property in properties)
@@ -104,5 +116,14 @@
             item.properties.Add(new Property<int>(PropertyType.IntValue, sword.Damage));
             return item;
         }
+
+        public static Item CreateScroll()
+        {
+            var item = new Item(Content.Scroll);
+            var property = new Property<string>(PropertyType.StringValue, "light");
+            return item;
+        }
+
+
     }
 }

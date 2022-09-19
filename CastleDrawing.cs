@@ -72,6 +72,9 @@ namespace WWC
                 case Content.Torch:
                     return "T";
 
+                case Content.Scroll:
+                    return "s";
+
                 case Content.Sink:
                     if (tripped)
                         return " ";

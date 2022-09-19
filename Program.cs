@@ -15,7 +15,6 @@ namespace WWC
         private static Text? statusText = null;
         private static Actor? player = null;
         private static Castle? castle = null;
-        private static CommandState state = CommandState.Playing;
         private static Console? console = null;
         private static Script? script = null;
         private static MessageDrawing? messageDrawing = null;
@@ -27,8 +26,8 @@ namespace WWC
             script.Globals["go"] = (Action<int, int, int>)Go;
             script.Globals["reset"] = (Action<int>)Reset;
             script.Globals["summon"] = (Action<string>)Summon;
-            script.Globals["light"] = Light;
-            script.Globals["dark"] = Dark;
+            script.Globals["light"] = (Action)Light;
+            script.Globals["dark"] = (Action)Dark;
 
             script.Options.DebugPrint = s => Print(s);
 
@@ -92,6 +91,7 @@ namespace WWC
 
             var castleDrawing = new CastleDrawing(font);
             var inventoryDrawing = new InventoryDrawing(font);
+            var vendorDrawing = new VendorDrawing(font);
 
             var image = new Image("wwc.png");
 
@@ -106,16 +106,21 @@ namespace WWC
             window.SetKeyRepeatEnabled(false);
             window.KeyPressed += (sender, args) => 
             {
-                switch (state)
+                switch (castle.State)
                 {
                     case CommandState.Command:
                         if (!console.KeyPressed(args.Code))
-                            state = CommandState.Playing;
+                            castle.State = CommandState.Playing;
                         break;
 
                     case CommandState.Inventory:
                         if (!inventoryDrawing.KeyPressed(args.Code))
-                            state = CommandState.Playing;
+                            castle.State = CommandState.Playing;
+                        break;
+
+                    case CommandState.Vendor:
+                        if (!vendorDrawing.KeyPressed(args.Code))
+                            castle.State = CommandState.Playing;
                         break;
 
                     case CommandState.DisplayMessage:
@@ -124,14 +129,15 @@ namespace WWC
                         break;
 
                     case CommandState.Playing:
+                        // TODO: move into CastleDrawing
                         switch (args.Code)
                         {
                             case Keyboard.Key.F5:
-                                state = CommandState.Command;
+                                castle.State = CommandState.Command;
                                 break;
 
                             case Keyboard.Key.I:
-                                state = CommandState.Inventory;
+                                castle.State = CommandState.Inventory;
                                 break;
 
                             case Keyboard.Key.Left:
@@ -182,7 +188,7 @@ namespace WWC
                 castle.Update(clock.ElapsedTime, player);
                 window.Clear(background);
                 
-                switch (state)
+                switch (castle.State)
                 {
                     case CommandState.Command:
                         console.Draw(window);
@@ -199,6 +205,10 @@ namespace WWC
                         castleDrawing.Draw(window, castle, player);
                         break;
 
+                    case CommandState.Vendor:
+                        vendorDrawing.Draw(window);
+                        break;
+
                     case CommandState.DisplayMessage:
                         if (messageDrawing != null)
                             messageDrawing.Draw(window);
@@ -212,7 +222,7 @@ namespace WWC
         private static void DisplayMessage(string message, Font font)
         {
             messageDrawing = new MessageDrawing(message, font);
-            state = CommandState.DisplayMessage;
+            castle!.State = CommandState.DisplayMessage;
         }
 
         private static void Print(string text)
@@ -226,14 +236,14 @@ namespace WWC
             player.Y = y;
             player.Z = z;
 
-            state = CommandState.Playing;
+            castle!.State = CommandState.Playing;
         }
 
         private static void Reset(int what = 0)
         {
             player!.Energy = 100;
 
-            state = CommandState.Playing;
+            castle!.State = CommandState.Playing;
         }
 
         private static void Summon(string what)
@@ -280,7 +290,7 @@ namespace WWC
                     break;
             }
 
-            state = CommandState.Playing;
+            castle.State = CommandState.Playing;
         }
 
         private static void Light()
@@ -298,7 +308,7 @@ namespace WWC
             try
             {
                 script!.DoString(command);
-                state = CommandState.Playing;
+                castle!.State = CommandState.Playing;
             }
             catch (Exception ex)
             {

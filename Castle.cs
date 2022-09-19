@@ -18,6 +18,7 @@ namespace WWC
         private List<Actor> monsters;
         private Time elapsedTime;
         private Time statusWhen;
+        private CommandState state;
 
         public Castle(TinyMessengerHub hub, MonsterManager monstreManager, WeaponManager weaponManager)
         {
@@ -89,6 +90,11 @@ namespace WWC
                 if (random.Next(100) < 10 + z / 2)
                     room.Items.Add(Item.CreateWarpRoom());
 
+                // Scrolls
+                room = GetEmptyRoom(z);
+                if (random.Next(100) < 10 + z / 2)
+                    room.Items.Add(Item.CreateScroll());
+
                 room = GetEmptyRoom(z);
                 if (random.Next(100) < 40)
                 {
@@ -109,8 +115,12 @@ namespace WWC
                 CreateMonster(room, z);
             }
 
+            state = CommandState.Playing;
+
             hub.Subscribe<StatusMessage>(OnStatusMessage);
         }
+
+        public CommandState State { get => state; set { state = value; } }
 
         public string Status => status;
 
@@ -261,8 +271,16 @@ namespace WWC
                 return true;
             }
 
-            monster.Awake = true;
-            Arena.Battle(player, monster);
+            if (monster.ActorType == ActorType.Vendor)
+            {
+                monster.Awake = true;
+                state = CommandState.Vendor;
+            }
+            else
+            {
+                monster.Awake = true;
+                Arena.Battle(player, monster);
+            }
 
             return false;
         }
@@ -307,6 +325,7 @@ namespace WWC
                     case Content.Torch:
                     case Content.Dagger:
                     case Content.Sword:
+                    case Content.Scroll:
                         PickupItem(room, player);
                         list.Add(item);
                         break;
@@ -389,6 +408,11 @@ namespace WWC
                     case Content.Sword:
                         actor.Items.Add(item);
                         messengerHub.Publish(new StatusMessage(this, "Player picked up a weapon"));
+                        break;
+
+                    case Content.Scroll:
+                        actor.Items.Add(item);
+                        messengerHub.Publish(new StatusMessage(this, "Player picked up a scroll"));
                         break;
                 }
             }

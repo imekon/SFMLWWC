@@ -4,6 +4,7 @@
     {
         BoolValue,
         IntValue,
-        FloatValue
+        FloatValue,
+        StringValue
     }
 }
