@@ -28,6 +28,7 @@ namespace WWC
             script.Globals["summon"] = (Action<string>)Summon;
             script.Globals["light"] = (Action)Light;
             script.Globals["dark"] = (Action)Dark;
+            script.Globals["save"] = (Action<string>)Save;
 
             script.Options.DebugPrint = s => Print(s);
 
@@ -206,7 +207,7 @@ namespace WWC
                         break;
 
                     case CommandState.Vendor:
-                        vendorDrawing.Draw(window);
+                        vendorDrawing.Draw(window, castle, player, castle.Vendor);
                         break;
 
                     case CommandState.DisplayMessage:
@@ -301,6 +302,11 @@ namespace WWC
         private static void Dark()
         {
             castle!.Dark(player!.Z);
+        }
+
+        private static void Save(string filename)
+        {
+            castle!.Save(filename);
         }
 
         private static void ConsoleExecute(string command)

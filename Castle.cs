@@ -1,4 +1,6 @@
-﻿using SFML.System;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using SFML.System;
 using TinyMessenger;
 
 namespace WWC
@@ -16,6 +18,7 @@ namespace WWC
         private Random random;
         private Room[,,] rooms;
         private List<Actor> monsters;
+        private Actor? vendor;
         private Time elapsedTime;
         private Time statusWhen;
         private CommandState state;
@@ -36,6 +39,7 @@ namespace WWC
 
             monsters = new List<Actor>();
             rooms = new Room[WIDTH, HEIGHT, DEPTH];
+            vendor = null;
 
             // Empty all the rooms
             for (var z = 0; z < DEPTH; z++)
@@ -120,9 +124,33 @@ namespace WWC
             hub.Subscribe<StatusMessage>(OnStatusMessage);
         }
 
+        [JsonIgnore]
         public CommandState State { get => state; set { state = value; } }
 
+        [JsonIgnore]
         public string Status => status;
+
+        public Room[,,] Rooms => rooms;
+
+        [JsonIgnore]
+        public Actor? Vendor => vendor;
+
+        public void Save(string filename)
+        {
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            var json = JsonSerializer.Serialize(this, options);
+            File.WriteAllText(filename, json);
+        }
+
+        public static Castle? Load(string filename)
+        {
+            var castle = JsonSerializer.Deserialize<Castle>(filename);
+            return castle;
+        }
 
         public Room GetRoom(int x, int y, int z)
         {
@@ -184,10 +212,30 @@ namespace WWC
                             continue;
 
                         var monster = new Actor(type);
+                        if (type == ActorType.Vendor)
+                            LoadUpVendor(monster, z);
+
                         room.Monsters.Add(monster);
                         break;
                     }
                 }
+            }
+        }
+
+        private void LoadUpVendor(Actor monster, int z)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                var item = Item.CreateDagger(weaponManager);
+                if (item != null)
+                    monster.Items.Add(item);
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                var item = Item.CreateSword(weaponManager);
+                if (item != null)
+                    monster.Items.Add(item);
             }
         }
 
@@ -275,11 +323,12 @@ namespace WWC
             {
                 monster.Awake = true;
                 state = CommandState.Vendor;
+                vendor = monster;
             }
             else
             {
                 monster.Awake = true;
-                Arena.Battle(player, monster);
+                Arena.Battle(messengerHub, player, monster);
             }
 
             return false;

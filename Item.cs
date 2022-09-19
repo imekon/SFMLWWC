@@ -124,6 +124,21 @@
             return item;
         }
 
+        public static string GetItemName(Content content)
+        {
+            switch(content)
+            {
+                case Content.Lantern:
+                    return "Lantern";
 
+                case Content.Dagger:
+                    return "Dagger";
+
+                case Content.Sword:
+                    return "Sword";
+            }
+
+            return "Unknown";
+        }
     }
 }
