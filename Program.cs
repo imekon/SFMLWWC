@@ -62,7 +62,7 @@ namespace WWC
                         var armour = pair.Value.Table.Get("armour");
                         var lowest = pair.Value.Table.Get("lowest");
                         var hightest = pair.Value.Table.Get("highest");
-                        var monster = new Monster(name.String, (int)strength.Number, (int)dexterity.Number, (int)iq.Number, (int)armour.Number, (int)lowest.Number, (int)hightest.Number);
+                        var monster = new MonsterTemplate(name.String, (int)strength.Number, (int)dexterity.Number, (int)iq.Number, (int)armour.Number, (int)lowest.Number, (int)hightest.Number);
                         monsterManager.AddMonster(monster);
                     }
 
@@ -72,7 +72,7 @@ namespace WWC
                     {
                         var name = pair.Value.Table.Get("name");
                         var damage = pair.Value.Table.Get("damage");
-                        var weapon = new Weapon(name.String, (int)damage.Number);
+                        var weapon = new WeaponTemplate(name.String, (int)damage.Number);
                         weaponManager.AddWeapon(weapon);
                     }
                 }

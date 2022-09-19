@@ -2,21 +2,21 @@
 {
     internal class MonsterManager
     {
-        private Dictionary<string, Monster> monsters;
+        private Dictionary<string, MonsterTemplate> monsters;
 
         public MonsterManager()
         {
-            monsters = new Dictionary<string, Monster>();
+            monsters = new Dictionary<string, MonsterTemplate>();
         }
 
-        public List<Monster> Monsters => monsters.Values.ToList();
+        public List<MonsterTemplate> Monsters => monsters.Values.ToList();
 
-        public void AddMonster(Monster monster)
+        public void AddMonster(MonsterTemplate monster)
         {
             monsters.Add(monster.Name, monster);
         }
 
-        public Monster? FindMonster(string name)
+        public MonsterTemplate? FindMonster(string name)
         {
             if (monsters.ContainsKey(name))
                 return monsters[name];

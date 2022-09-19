@@ -3,7 +3,7 @@
     /// <summary>
     /// Monster template
     /// </summary>
-    internal class Monster
+    internal class MonsterTemplate
     {
         private string name;
         private int strength;
@@ -13,7 +13,7 @@
         private int lowest;
         private int highest;
 
-        public Monster(string name, int strength, int dexterity, int iq, int armour, int lowest, int highest)
+        public MonsterTemplate(string name, int strength, int dexterity, int iq, int armour, int lowest, int highest)
         {
             this.name = name;
             this.strength = strength;

@@ -3,12 +3,12 @@
     /// <summary>
     /// Weapon template
     /// </summary>
-    internal class Weapon
+    internal class WeaponTemplate
     {
         private string name;
         private int damage;
 
-        public Weapon(string name, int damage)
+        public WeaponTemplate(string name, int damage)
         {
             this.name = name;
             this.damage = damage;

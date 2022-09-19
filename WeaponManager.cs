@@ -2,21 +2,21 @@
 {
     internal class WeaponManager
     {
-        private Dictionary<string, Weapon> weapons;
+        private Dictionary<string, WeaponTemplate> weapons;
 
         public WeaponManager()
         {
-            weapons = new Dictionary<string, Weapon>();
+            weapons = new Dictionary<string, WeaponTemplate>();
         }
 
-        public List<Weapon> Weapons => weapons.Values.ToList();
+        public List<WeaponTemplate> Weapons => weapons.Values.ToList();
 
-        public void AddWeapon(Weapon weapon)
+        public void AddWeapon(WeaponTemplate weapon)
         {
             weapons.Add(weapon.Name, weapon);
         }
 
-        public Weapon? FindWeapon(string name)
+        public WeaponTemplate? FindWeapon(string name)
         {
             if (weapons.ContainsKey(name))
                 return weapons[name];
