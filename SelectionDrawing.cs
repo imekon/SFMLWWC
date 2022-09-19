@@ -43,6 +43,13 @@ namespace WWC
             text.DisplayedString = title;
             text.Position = new Vector2f(10, 10);
             window.Draw(text);
+
+            if (selected >= 0)
+            {
+                text.DisplayedString = ">";
+                text.Position = new Vector2f(10, selected * 28 + 46);
+                window.Draw(text);
+            }
         }
     }
 
@@ -65,6 +72,11 @@ namespace WWC
             items.Remove(item);
         }
 
+        public void Clear()
+        {
+            items.Clear();
+        }
+
         protected abstract string GetText(T item);
 
         public override void Draw(RenderWindow window)
@@ -76,7 +88,7 @@ namespace WWC
             foreach(var item in items)
             {
                 text.DisplayedString = GetText(item);
-                text.Position = new Vector2f(10, 30 + 26 * line++);
+                text.Position = new Vector2f(30, 46 + 28 * line++);
                 window.Draw(text);
             }
         }

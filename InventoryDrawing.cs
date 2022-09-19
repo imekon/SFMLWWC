@@ -1,81 +1,35 @@
 ﻿using SFML.Graphics;
-using SFML.System;
 using SFML.Window;
 
 namespace WWC
 {
-    internal class InventoryDrawing
+    internal class InventoryDrawing : SelectionDrawing<Item>
     {
-        private Font font;
-        private Text text;
-
-        public InventoryDrawing(Font font)
+        public InventoryDrawing(Font font) : base(font, "Inventory")
         {
-            this.font = font;
-            text = new Text("Inventory", font);
         }
 
-        public bool KeyPressed(Keyboard.Key key)
+        protected override string GetText(Item item)
         {
-            switch(key)
+            switch (item.Contents)
             {
-                case Keyboard.Key.Escape:
-                    return false;
+                case Content.Boots:
+                    return "Boots";
+
+                case Content.Dagger:
+                    return $"Dagger - {item.Value} damage";
+
+                case Content.Sword:
+                    return $"Sword - {item.Value} damage";
+
+                case Content.Axe:
+                    return "Axe";
+
+                case Content.Scroll:
+                    return "Scroll";
             }
 
-            return true;
-        }
-
-        public void Draw(RenderWindow window, Castle castle, Actor player)
-        {
-            var line = 0;
-            var count = 0;
-
-            text.DisplayedString = "Inventory";
-            text.Position = new Vector2f(10, 10 + line * 26);
-            line += 2;
-            window.Draw(text);
-
-            foreach(var item in player.Items)
-            {
-                switch(item.Contents)
-                {
-                    case Content.Boots:
-                        text.DisplayedString = "Boots";
-                        text.Position = new Vector2f(10, 10 + line * 26); line++;
-                        window.Draw(text);
-                        break;
-
-                    case Content.Dagger:
-                        text.DisplayedString = $"Dagger - {item.Value} damage";
-                        text.Position = new Vector2f(10, 10 + line * 26); line++;
-                        window.Draw(text);
-                        break;
-
-                    case Content.Sword:
-                        text.DisplayedString = $"Sword - {item.Value} damage";
-                        text.Position = new Vector2f(10, 10 + line * 26); line++;
-                        window.Draw(text);
-                        break;
-
-                    case Content.Axe:
-                        text.DisplayedString = "Axe";
-                        text.Position = new Vector2f(10, 10 + line * 26); line++;
-                        window.Draw(text);
-                        break;
-
-                    case Content.Scroll:
-                        text.DisplayedString = "Scroll";
-                        text.Position = new Vector2f(10, 10 + line * 26); line++;
-                        window.Draw(text);
-                        break;
-                }
-
-                count++;
-
-                if (count >= 10)
-                    break;
-            }
+            return "Unknown";
         }
     }
 }
