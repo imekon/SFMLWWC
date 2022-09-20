@@ -2,7 +2,7 @@
 
 namespace WWC
 {
-    internal class Actor
+    internal class Actor : IGameContainer<Item>
     {
         private ActorType type;
         private bool awake;
@@ -76,6 +76,7 @@ namespace WWC
             }
         }
 
+        public string Title => "Inventory";
         public List<Item> Items => items;
         public Item? Weapon { get => weapon; set { weapon = value; } }
         public Item? Armour { get => armour; set { armour = value; } }

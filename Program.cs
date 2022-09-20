@@ -199,10 +199,7 @@ namespace WWC
                         break;
 
                     case CommandState.Inventory:
-                        inventoryDrawing.Clear();
-                        foreach (var item in player.Items)
-                            inventoryDrawing.Add(item);
-                        inventoryDrawing.Draw(window);
+                        inventoryDrawing.Draw(window, player);
                         break;
 
                     case CommandState.Playing:
@@ -210,10 +207,7 @@ namespace WWC
                         break;
 
                     case CommandState.Vendor:
-                        vendorDrawing.Clear();
-                        foreach(var item in castle.Vendor!.Items)
-                            vendorDrawing.Add(item);
-                        vendorDrawing.Draw(window);
+                        vendorDrawing.Draw(window, castle.Vendor!);
                         break;
 
                     case CommandState.DisplayMessage:

@@ -5,7 +5,7 @@ namespace WWC
 {
     internal class InventoryDrawing : SelectionDrawing<Item>
     {
-        public InventoryDrawing(Font font) : base(font, "Inventory")
+        public InventoryDrawing(Font font) : base(font)
         {
         }
 

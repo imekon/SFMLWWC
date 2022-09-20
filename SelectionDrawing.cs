@@ -4,24 +4,22 @@ using SFML.Window;
 
 namespace WWC
 {
-    internal class SelectionDrawingBase
+    internal abstract class SelectionDrawing<T>
     {
         private Font font;
-        private string title;
         protected int selected;
         protected Text text;
 
-        public SelectionDrawingBase(Font font, string title)
+        public SelectionDrawing(Font font)
         {
             this.font = font;
-            this.title = title;
             selected = -1;
-            text = new Text(title, font);
+            text = new Text("Title", font);
         }
 
         public virtual bool KeyPressed(Keyboard.Key key)
         {
-            switch(key)
+            switch (key)
             {
                 case Keyboard.Key.Up:
                     selected--;
@@ -38,9 +36,11 @@ namespace WWC
             return true;
         }
 
-        public virtual void Draw(RenderWindow window)
+        protected abstract string GetText(T item);
+
+        public void Draw(RenderWindow window, IGameContainer<T> gameContainer)
         {
-            text.DisplayedString = title;
+            text.DisplayedString = gameContainer.Title;
             text.Position = new Vector2f(10, 10);
             window.Draw(text);
 
@@ -50,42 +50,10 @@ namespace WWC
                 text.Position = new Vector2f(10, selected * 28 + 46);
                 window.Draw(text);
             }
-        }
-    }
-
-    internal abstract class SelectionDrawing<T> : SelectionDrawingBase
-    {
-        private List<T> items;
-
-        public SelectionDrawing(Font font, string title) : base(font, title)
-        {
-            items = new List<T>();
-        }
-
-        public void Add(T item)
-        {
-            items.Add(item);
-        }
-
-        public void Remove(T item)
-        {
-            items.Remove(item);
-        }
-
-        public void Clear()
-        {
-            items.Clear();
-        }
-
-        protected abstract string GetText(T item);
-
-        public override void Draw(RenderWindow window)
-        {
-            base.Draw(window);
 
             int line = 0;
 
-            foreach(var item in items)
+            foreach (var item in gameContainer.Items)
             {
                 text.DisplayedString = GetText(item);
                 text.Position = new Vector2f(30, 46 + 28 * line++);

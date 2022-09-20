@@ -6,7 +6,7 @@ namespace WWC
 {
     internal class VendorDrawing : SelectionDrawing<Item>
     {
-        public VendorDrawing(Font font) : base(font, "Vendor")
+        public VendorDrawing(Font font) : base(font)
         {
         }
 
