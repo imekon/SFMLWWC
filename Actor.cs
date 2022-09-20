@@ -76,7 +76,16 @@ namespace WWC
             }
         }
 
-        public string Title => "Inventory";
+        public string Title
+        {
+            get
+            {
+                if (type == ActorType.Vendor)
+                    return "Vendor";
+
+                return "Inventory";
+            }
+        }
         public List<Item> Items => items;
         public Item? Weapon { get => weapon; set { weapon = value; } }
         public Item? Armour { get => armour; set { armour = value; } }
