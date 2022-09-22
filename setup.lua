@@ -72,6 +72,7 @@
 	dagger = {
 		name = "dagger",
 		damage = 4,
+		price = 4,
 		magical = false,
 		weild = true
 	}
@@ -79,6 +80,7 @@
 	sword = {
 		name = "sword",
 		damage = 6,
+		price = 12,
 		magical = false,
 		weild = true
 	}

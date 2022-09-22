@@ -74,9 +74,10 @@ namespace WWC
                     {
                         var name = pair.Value.Table.Get("name");
                         var damage = pair.Value.Table.Get("damage");
+                        var price = pair.Value.Table.Get("price");
                         var magical = pair.Value.Table.Get("magical");
                         var weild = pair.Value.Table.Get("weild");
-                        var weapon = new WeaponTemplate(name.String, (int)damage.Number, magical.Boolean, weild.Boolean);
+                        var weapon = new WeaponTemplate(name.String, (int)damage.Number, (int)price.Number, magical.Boolean, weild.Boolean);
                         weaponManager.AddWeapon(weapon);
                     }
                 }

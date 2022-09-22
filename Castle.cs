@@ -211,9 +211,14 @@ namespace WWC
                         if (type == ActorType.Unknown)
                             continue;
 
-                        var monster = new Actor(type);
+                        Actor monster;
                         if (type == ActorType.Vendor)
+                        {
+                            monster = new Vendor();
                             LoadUpVendor(monster, z);
+                        }
+                        else
+                            monster = new Actor(type);
 
                         room.Monsters.Add(monster);
                         break;
@@ -224,19 +229,29 @@ namespace WWC
 
         private void LoadUpVendor(Actor monster, int z)
         {
+            var shopping = new Dictionary<Item, int>();
+
             for (int i = 0; i < 3; i++)
             {
                 var item = Item.CreateDagger(weaponManager);
                 if (item != null)
+                {
+                    shopping[item] = 10;
                     monster.Items.Add(item);
+                }
             }
 
             for (int i = 0; i < 3; i++)
             {
                 var item = Item.CreateSword(weaponManager);
                 if (item != null)
+                {
+                    shopping[item] = 30;
                     monster.Items.Add(item);
+                }
             }
+
+            
         }
 
         private void ExecuteOnAllRooms(int z, Action<Room> execute)

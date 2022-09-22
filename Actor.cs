@@ -18,7 +18,7 @@ namespace WWC
         private int iq;
         private int gold;
         private int lighting;
-        private List<Item> items;
+        protected List<Item> items;
         private Item? weapon;
         private Item? armour;
 
@@ -143,6 +143,32 @@ namespace WWC
 
             items.Remove(light);
             lighting += light.Value;
+        }
+    }
+
+    internal class Vendor : Actor
+    {
+        private Dictionary<Item, int> shop;
+
+        public Vendor() : base(ActorType.Vendor)
+        {
+            shop = new Dictionary<Item, int>();
+        }
+
+        public void SetPrices(WeaponManager weaponManager)
+        {
+            foreach(var item in items)
+            {
+
+            }
+        }
+
+        public int FindPrice(Item item)
+        {
+            if (shop.ContainsKey(item))
+                return shop[item];
+
+            return 0;
         }
     }
 }

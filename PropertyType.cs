@@ -5,6 +5,6 @@
         BoolValue,
         IntValue,
         FloatValue,
-        StringValue
+        StringValue,
     }
 }
